@@ -1,6 +1,0 @@
-fastapi
-fastapi-users[sqlalchemy]
-uvicorn[standard]
-aiosqlite
-asyncpg
-psycopg2-binary==2.9.5
