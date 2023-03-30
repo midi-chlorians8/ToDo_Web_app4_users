@@ -6,6 +6,10 @@ from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import signJWT, decodeJWT
 
 
+
+
+
+
 posts = [
     {
         "id": 1,
@@ -17,6 +21,39 @@ posts = [
 users = []
 
 app = FastAPI()
+
+
+# CORS
+from fastapi.middleware.cors import CORSMiddleware
+origins = [
+    "http://localhost:8001",  # Adjust the port number based on where your web page is hosted
+    "http://127.0.0.1:8001", 
+    "*"
+]
+app.add_middleware(
+    CORSMiddleware,
+    #allow_origins=origins,
+    allow_origins="*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# CORS
+
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, Request, HTTPException
+
+#templates = Jinja2Templates(directory="templates")
+
+import os
+templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+templates = Jinja2Templates(directory=templates_dir)
+@app.get("/matrix-login", response_class=HTMLResponse)
+async def matrix_login(request: Request):
+    return templates.TemplateResponse("matrix_login7b.html", {"request": request})
+
+
 
 
 # helpers
@@ -144,6 +181,13 @@ async def create_user(user: UserSchema = Body(...)):
     return signJWT(user.email)
 
 
+@app.post("/user/login", tags=["user"])
+async def user_login(user: UserLoginSchema = Body(...)):
+    if check_user(user):
+        return signJWT(user.email)
+    raise HTTPException(status_code=401, detail="Wrong login details!")
+
+
 # @app.post("/user/login", tags=["user"])
 # async def user_login(user: UserLoginSchema = Body(...)):
 #     if check_user(user):
@@ -151,8 +195,3 @@ async def create_user(user: UserSchema = Body(...)):
 #     return {
 #         "error": "Wrong login details!"
 #     }
-@app.post("/user/login", tags=["user"])
-async def user_login(user: UserLoginSchema = Body(...)):
-    if check_user(user):
-        return signJWT(user.email)
-    raise HTTPException(status_code=401, detail="Wrong login details!")

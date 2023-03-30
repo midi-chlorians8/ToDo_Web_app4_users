@@ -69,3 +69,4 @@ Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
     ```
 
 1. Test at [http://localhost:8081/docs](http://localhost:8081/docs)
+Continue where you left off
