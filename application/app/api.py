@@ -33,7 +33,7 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     #allow_origins=origins,
-    allow_origins="*",
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -51,7 +51,7 @@ templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templa
 templates = Jinja2Templates(directory=templates_dir)
 @app.get("/matrix-login", response_class=HTMLResponse)
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("matrix_login7b.html", {"request": request})
+    return templates.TemplateResponse("matrix_login8b.html", {"request": request})
 
 
 
@@ -175,10 +175,19 @@ async def delete_post(post_id: int, current_user: dict = Depends(get_current_use
 
 
 
-@app.post("/user/signup", tags=["user"])
-async def create_user(user: UserSchema = Body(...)):
-    users.append(user)  # replace with db call, making sure to hash the password first
-    return signJWT(user.email)
+# @app.post("/user/signup", tags=["user"])
+# async def create_user(user: UserSchema = Body(...)):
+#     users.append(user)  # replace with db call, making sure to hash the password first
+#     return signJWT(user.email)
+@app.post("/user/register", tags=["user"])
+async def user_register(user: UserSchema = Body(...)):
+    # Check if the user already exists
+    for existing_user in users:
+        if existing_user.email == user.email:
+            raise HTTPException(status_code=400, detail="User already exists")
+
+    users.append(user)  # Add user to the users list
+    return {"message": "User successfully registered"}
 
 
 @app.post("/user/login", tags=["user"])
