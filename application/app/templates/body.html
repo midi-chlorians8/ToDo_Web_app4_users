@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input and Buttons</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            font-family: "Courier New", monospace;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        textarea {
+            background-color: black;
+            border: 1px solid lime;
+            color: lime;
+            padding: 10px;
+            outline: none;
+            font-size: 2em;
+            width: 800px;
+            resize: none;
+            overflow: hidden;
+        }
+
+        button {
+            background-color: lime;
+            border: none;
+            color: black;
+            font-weight: bold;
+            padding: 10px 20px; /* Increased width by doubling the left and right padding */
+            cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            font-size: 3em; /* Increased "+" sign size */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-container">
+            <textarea id="input-field" placeholder="Input new note" oninput="autoGrow(this)"></textarea>
+            <button id="plus-button" onclick="increment()">+</button>
+        </div>
+    </div>
+    <script>
+        function increment() {
+            const inputField = document.getElementById("input-field");
+            const currentValue = Number(inputField.value) || 0;
+            inputField.value = currentValue + 1;
+        }
+
+        function autoGrow(element) {
+            element.style.height = 'auto';
+            element.style.height = (element.scrollHeight) + 'px';
+
+            // Synchronize button height with input field height
+            const plusButton = document.getElementById("plus-button");
+            plusButton.style.height = element.style.height;
+        }
+    </script>
+</body>
+</html>

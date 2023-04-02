@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация пользователя</title>
+    <script>
+        let token = "";
+
+        async function submitForm(event) {
+            event.preventDefault();
+            const fullname = document.getElementById("fullname").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://0.0.0.0:8001/user/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fullname: fullname,
+                    email: email,
+                    password: password
+                })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+                token = result.token.access_token;
+                localStorage.setItem("fullname", fullname);
+                alert("Регистрация успешна!");
+                document.getElementById("continueButton").style.display = "block";
+            } else {
+                const error = await response.json();
+                console.error(error);
+                alert("Ошибка регистрации: " + error.detail);
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            const response = await fetch("http://0.0.0.0:8001/user/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+                token = result.access_token;
+                alert("Вход выполнен успешно!");
+                document.getElementById("continueButton").style.display = "block";
+            } else {
+                const error = await response.json();
+                console.error(error);
+                alert("Ошибка входа: " + error.detail);
+            }
+        }
+
+        async function navigateToNewPage() {
+            const fullname = localStorage.getItem("fullname");
+
+            console.log("Fullname from localStorage: ", fullname);
+            const url = `http://0.0.0.0:8001/new_page?token=${token}&fullname=${encodeURIComponent(fullname)}`;
+            //window.location.href = url;
+
+            console.log("URL: ", url);
+            
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Accept": "text/html",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const text = await response.text();
+                const parser = new DOMParser();
+                const htmlDocument = parser.parseFromString(text, "text/html");
+                document.documentElement.replaceWith(htmlDocument.documentElement);
+            } else {
+                const error = await response.text();
+                console.error(error);
+                alert("Ошибка: " + error);
+            }
+        }
+
+
+        
+    </script>
+</head>
+<body>
+    <h1>Регистрация пользователя</h1>
+    <form id="registrationForm" onsubmit="submitForm(event)">
+        <label for="fullname">Полное имя:</label>
+        <input type="text" id="fullname" name="fullname" required><br>
+
+        <br>
+
+        <label for="email">Эл. адрес:</label>
+
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <br>
+    <h2>Вход</h2>
+    <form id="loginForm">
+        <label for="loginEmail">Эл. адрес для входа:</label>
+        <input type="email" id="loginEmail" name="loginEmail" required><br><br>
+
+        <label for="loginPassword">Пароль для входа:</label>
+        <input type="password" id="loginPassword" name="loginPassword" required><br><br>
+
+        <button type="button" onclick="login()">Войти</button>
+    </form>
+    <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
+</body>
+</html>

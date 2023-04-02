@@ -1,6 +1,0 @@
-I use fastapi. I have /auth/jwt/login endpoint. I need html page with 2 input field to input "username" and "password" . I need button "send" . When I click it - I have post request with body params
-I need html page code
-
-*
-continue from where you left off
-

@@ -119,49 +119,46 @@
             event.currentTarget.classList.add('active');
         }
 
-    async function submitForm(event, url) {
-        event.preventDefault();
-        const form = event.target;
+        async function submitForm(event, url) {
+            event.preventDefault();
+            const form = event.target;
 
-        const email = form.querySelector('input[type="email"]').value;
-        const password = form.querySelector('input[type="password"]').value;
-        const fullnameInput = form.querySelector('input[type="text"]');
+            const email = form.querySelector('input[type="email"]').value;
+            const password = form.querySelector('input[type="password"]').value;
+            const fullnameInput = form.querySelector('input[type="text"]');
 
-        const data = { email, password };
-        if (fullnameInput) {
-            data.fullname = fullnameInput.value;
-        }
-
-        try {
-            const response = await fetch(`${url}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (response.status === 200) {
-                const userData = await response.json();  // Parse the response as JSON
-                console.log("User data:", userData);
-
-                // Update user profile name
-                document.querySelector('.user-profile div').textContent = userData.email;
-
-                // Show user profile and notes section
-                document.querySelector('.user-profile').style.display = 'flex';
-                document.querySelector('#notes-section').style.display = 'block';
-
-                // Hide login and register forms
-                document.querySelector('.tab-container').style.display = 'none';
-            } else {
-                alert('Error: ' + response.statusText);
+            const data = { email, password };
+            if (fullnameInput) {
+                data.fullname = fullnameInput.value;
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error: ' + error.message);
+
+            try {
+                const response = await fetch(`${url}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.status === 200) {
+                    const userData = await response.json();
+                    console.log("User data:", userData);
+
+                    // Redirect to new page with token
+                    window.location.href = `/new_page?token=${String(userData.token)}`;
+
+
+                } else if (response.status === 400) {
+                    alert('Error: User already exists!');
+                } else {
+                    alert('Error: ' + response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
         }
-}
 
 
 
