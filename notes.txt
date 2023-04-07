@@ -1,5 +1,10 @@
-I use fastapi. I have /auth/jwt/login endpoint. I need html page with 2 input field to input "username" and "password" . I need button "send" . When I click it - I have post request with body params
-I need html page code
+
+
+
+
+
+
+
 
 *
 continue from where you left off
@@ -10,20 +15,77 @@ abc
 
 ===
 
-answer me on russian. I use fastapi in my service. 
-@app.get("/", response_class=HTMLResponse,tags=["root"])
-async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v2.html", {"request": request})
 
-@app.get("/new_page2", response_class=HTMLResponse)
-async def new_page(
-    request: Request,
-    fullname: str = Query("Anonim"),
-    current_user: dict = Depends(get_current_user),
-):
-    return templates.TemplateResponse("index.html", {"request": request, "fullname": fullname})
 
-index.html:
-123
 
-When I updated index.html I return to nw_v2.html (my root page), but I wnat to stay on nw_v2.html page. How can I do that
+
+
+
+
+===
+api backup:
+
+# async def get_current_user(token: str = Depends(JWTBearer())) -> dict:
+#     payload = decodeJWT(token)
+#     if payload:
+#         return payload
+#     else:
+#         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
+
+
+# @app.get("/new_page", response_class=HTMLResponse)
+# async def new_page(
+#     request: Request,
+#     token: str = Query(...),
+#     fullname: str = Query(...),
+#     current_user: dict = Depends(get_current_user),
+# ):
+#     return templates.TemplateResponse("nbody2.html", {"request": request, "fullname": fullname})
+
+# @app.get("/new_page2", response_class=HTMLResponse)
+# async def new_page(
+#     request: Request,
+#     fullname: str = Query("Anonim"),
+#     current_user: dict = Depends(get_current_user),
+# ):
+#     return templates.TemplateResponse("index.html", {"request": request, "fullname": fullname})
+
+
+
+
+
+# route handlers
+
+# @app.get("/", tags=["root"])
+# async def read_root() -> dict:
+#     return {"message": "Welcome to your blog!"}
+
+
+
+
+
+# @app.get("/posts/{id}", tags=["posts"])
+# async def get_single_post(id: int) -> dict:
+#     if id > len(posts):
+#         return {
+#             "error": "No such post with the supplied ID."
+#         }
+
+#     for post in posts:
+#         if post["id"] == id:
+#             return {
+#                 "data": post
+#             }
+
+
+
+
+# @app.post("/user/register", tags=["user"])
+# async def user_register(user: UserSchema = Body(...)):
+#     # Check if the user already exists
+#     for existing_user in users:
+#         if existing_user.email == user.email:
+#             raise HTTPException(status_code=400, detail="User already exists")
+
+#     users.append(user)  # Add user to the users list
+#     return {"email": user.email}  # Return the email of the registered user

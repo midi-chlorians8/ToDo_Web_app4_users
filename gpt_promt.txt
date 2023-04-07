@@ -1,0 +1,179 @@
+answer me always on russian. Send always full web page code.
+
+I need generate html page without css
+По центру будет "My notes"
+under "My notes" large button with "+" in the middle.
+under large button with "+" мы модулируем чтение заметок из бэкенда. 
+У нас будет 3 прямоугольника в каждом из них будет такой текст:"
+1) Сделать макет сайта
+2) Приминить его в проект
+"
+Важно чтоб высота прямоугольника изменялась от кол-ва текста в нём.
+Справа от каждого прямоугольника пусть будет кнопка "-" высота которой пропорционально зависит от высоты поля заметки слева.
+
+===
+
+У меня есть страница nbody7.html:
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty Page with Fullname and Messages</title>
+    <style>
+        #fullname {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        function getTokenFromCookie(cookieName) {
+            const cookieString = document.cookie;
+            const cookieArray = cookieString.split('; ');
+
+            for (const cookie of cookieArray) {
+                const [key, value] = cookie.split('=');
+                if (key === cookieName) {
+                    return value;
+                }
+            }
+            return null;
+        }
+
+        async function loadMessages() {
+            const token = getTokenFromCookie('token');
+            const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=5`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                displayMessages(data.data);
+                document.getElementById("responseOutput").textContent = JSON.stringify(data, null, 2);
+                document.getElementById("tokenOutput").textContent = token;
+            } else {
+                console.error("Error loading messages");
+                document.getElementById("responseOutput").textContent = "Error loading messages";
+            }
+        }
+
+        function displayMessages(messages) {
+            const messageList = document.getElementById("messageList");
+            messageList.innerHTML = "";
+
+            messages.forEach(message => {
+                const li = document.createElement("li");
+                li.textContent = message.content; // Use the appropriate field to display the message content
+                messageList.appendChild(li);
+            });
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fullname = urlParams.get("fullname");
+            document.getElementById("fullname").textContent = fullname;
+        }
+    </script>
+</head>
+<body>
+    <div id="fullname"></div>
+    <button onclick="loadMessages()">Show notes</button>
+    <ul id="messageList"></ul>
+    <h2>Server Response:</h2>
+    <pre id="responseOutput"></pre>
+    <h2>Current JWT Token:</h2>
+    <pre id="tokenOutput"></pre>
+</body>
+</html>
+
+Мне нужно перенести функционал отображения fullname на страницу test_body.html:
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заметки</title>
+    <style>
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>Мои заметки</h1>
+        <div style="width: 910px; margin-left: auto; margin-right: auto;">
+            <button style="font-size: 72px; width: 100%; height: 75px;">+</button>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <div style="display: inline-flex;">
+            <div id="noteRectangle" style="border: 1px solid black; padding: 10px; width: 800px;">
+                <p>1) Сделать макет сайта</p>
+                <p>2) Применить его в проект</p>
+            </div>
+            <button id="minusButton" style="display: inline-flex; width: 80px; height: 20px; margin-left: 10px; align-self: center; font-size: 108px; text-align: center; line-height: 0; position: relative;">
+                <span class="centered">-</span>
+            </button>
+            <script>
+                document.getElementById('minusButton').style.height = document.getElementById('noteRectangle').offsetHeight + 'px';
+            </script>
+        </div>
+    </div>
+</body>
+</html>
+
+Дай мне страницу с обновлённым функционалом test_body.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+У меня есть fastapi функция которая добавляет заметку
+
+@app.post("/posts", dependencies=[Depends(JWTBearer())], tags=["posts"])
+async def add_post(post: PostSchema, current_user: dict = Depends(get_current_user) ) -> dict:
+    post.id = len(posts) + 1
+    post.owner_id = current_user["user_id"]
+    posts.append(post.dict())
+    return {
+        "data": "post added."
+    }
+
+Вот модель:
+
+class PostSchema(BaseModel):
+    id: int = Field(default=None)
+    title: str = Field(...)
+    content: str = Field(...)
+    owner_id: str = Field(...) #Field(...) - обязательное поле для заполнения.
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "Securing FastAPI applications with JWT.",
+                "content": "In this tutorial, you'll learn how to secure your application by enabling authentication using JWT. We'll be using PyJWT to sign, encode and decode JWT tokens....",
+                "owner_id": " "
+            }
+        }
+
+После того как мы ввели в поле ввода текст, и жмём справа кнопку "+", она же "отправная", отправить запрос на добавление заметки. Текст из поля для ввода введи в "content" при отправке
