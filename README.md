@@ -1,4 +1,4 @@
-# ToDo_Web_app4_users
+# ToDo Web App for Users
 
 Our service allows users to create and manage notes with ease. You can easily register and login to start creating notes. With our service, you can create new notes or delete old ones with just a few clicks.
 
@@ -17,7 +17,7 @@ Our service allows users to create and manage notes with ease. You can easily re
 1. Create and activate a virtual environment:
 
     ```sh
-    $ python3 -m venv venv && source venv/bin/activate
+    python3 -m venv venv && source venv/bin/activate
     ```
 
 1. Install the requirements:
@@ -33,15 +33,19 @@ Our service allows users to create and manage notes with ease. You can easily re
     ```
 
 1. Test at [http://localhost:8081/docs](http://localhost:8081/docs)
-Continue where you left off
 
-To start program in the background:
+To start the program in the background, use this command:
+```sh
 nohup python main.py &
+```
 
 To stop:
+```sh
 ps aux | grep main.py
+```
+```sh
 kill <PID>
-
+```
 
 Hints:
 If some port already busy (test on ubuntu) = sudo fuser -k 8000/tcp
