@@ -2,7 +2,12 @@
 
 Our service allows users to create and manage notes with ease. You can easily register and login to start creating notes. With our service, you can create new notes or delete old ones with just a few clicks.
 
+Tech Stack
+This project uses the following technologies:
 
+- Python 3.10 - The programming language used for the backend.
+- FastAPI - The web framework used for the backend.
+- HTML, CSS, and JavaScript - The front-end languages used to create the user interface.
 
 ## Want to use this project?
 
@@ -47,7 +52,8 @@ ps aux | grep main.py
 kill <PID>
 ```
 
-Hints:
+# Some helpful hints:
+
 If some port already busy (test on ubuntu) = sudo fuser -k 8000/tcp
 To clear all container images              = sudo docker system prune -a --volumes
 
@@ -55,9 +61,9 @@ Links:
 remember general flow:
 https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/
 
-# Securing FastAPI with JWT Token-based Authentication
-Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 
 sources:
 https://testdriven.io/blog/fastapi-jwt-auth/
 https://github.com/testdrivenio/fastapi-jwt
+Securing FastAPI with JWT Token-based Authentication
+Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
