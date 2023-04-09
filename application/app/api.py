@@ -60,7 +60,11 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v64.html", {"request": request})
+    return templates.TemplateResponse("nw_v61.html", {"request": request})
+
+@app.get("/m", response_class=HTMLResponse,tags=["root"])
+async def matrix_login(request: Request):
+    return templates.TemplateResponse("nw_v65.html", {"request": request})
 
 
 

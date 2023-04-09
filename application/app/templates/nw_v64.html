@@ -59,6 +59,16 @@
         }
     </style>
     <script>
+                function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
         // Your existing JavaScript functions
         function changeTab(event, formId) {
             const tabContent = document.querySelectorAll('form');
@@ -168,6 +178,8 @@ async function login(email, password) {
             });
 
             if (response.status === 200) {
+                token = result.access_token;
+            setCookie("token", token, 1); // Set token as a cookie for 1 day
                 const data = await response.text();
                 console.log("Protected data:", data);
                 window.location.href = '/new_page2';
@@ -192,6 +204,8 @@ async function login(email, password) {
                 });
 
                 if (response.status === 200) {
+                    token = result.access_token;
+            setCookie("token", token, 1); // Set token as a cookie for 1 day
                     const data = await response.text();
                     console.log("Protected data:", data);
                     window.location.href = '/new_page2';

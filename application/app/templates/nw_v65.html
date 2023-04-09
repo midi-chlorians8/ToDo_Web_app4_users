@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    
+        #form-wrapper {
+            border: 1px solid black;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    
+        #tab-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    
+        .tab {
+            padding: 10px;
+            background-color: lightgray;
+            cursor: pointer;
+        }
+    
+        .active {
+            background-color: white;
+            font-weight: bold;
+        }
+    
+        .form {
+            display: none;
+        }
+    
+        .form.active {
+            display: block;
+        }
+    </style>
+    
+    <title>Регистрация пользователя</title>
+    <script>
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }    async function submitForm(event) {
+        event.preventDefault();
+        const fullname = document.getElementById("fullname").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("http://0.0.0.0:8001/user/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fullname: fullname,
+                email: email,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+            token = result.token.access_token;
+            localStorage.setItem("fullname", fullname);
+            alert("Регистрация успешна!");
+            // Automatically log in after successful registration
+            login(email, password);
+        } else {
+            const error = await response.json();
+            console.error(error);
+            alert("Ошибка регистрации: " + error.detail);
+        }
+    }
+
+    async function login(email, password) {
+        const response = await fetch("http://0.0.0.0:8001/user/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+            token = result.access_token;
+            setCookie("token", token, 1); // Set token as a cookie for 1 day
+            alert("Вход выполнен успешно!");
+            navigateToNewPage();
+        } else {
+            const error = await response.json();
+            console.error(error);
+            alert("Ошибка входа: " + error.detail);
+        }
+    }
+
+    function navigateToNewPage() {
+        const fullname = localStorage.getItem("fullname");
+        const url = `http://0.0.0.0:8001/new_page2?fullname=${encodeURIComponent(fullname)}`;
+        window.location.href = url;
+    }
+</script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="form-wrapper">
+            <div id="tab-wrapper">
+                <div class="tab active" onclick="activateTab('register-form')">Регистрация</div>
+                <div class="tab" onclick="activateTab('login-form')">Вход</div>
+            </div>
+            <form id="register-form" class="form active" onsubmit="submitForm(event)">
+                <label for="fullname">Полное имя:</label>
+                <input type="text" id="fullname" name="fullname" required><br><br>
+
+                <label for="email">Эл. адрес:</label>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+
+            <form id="login-form" class="form" onsubmit="login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); return false;">
+                <label for="loginEmail">Эл. адрес для входа:</label>
+                <input type="email" id="loginEmail" name="loginEmail" required><br><br>
+                <label for="loginPassword">Пароль для входа:</label>
+                <input type="password" id="loginPassword" name="loginPassword" required><br><br>
+
+                <button type="submit">Войти</button>
+            </form>
+        </div>
+    </div>
+    <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
+
+    <script>
+        function activateTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const forms = document.querySelectorAll('.form');
+            tabs.forEach(tab => {
+                if (tab.id === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            forms.forEach(form => {
+                if (form.id === tabName) {
+                    form.classList.add('active');
+                } else {
+                    form.classList.remove('active');
+                }
+            });
+        }
+    </script
+
+    </html>
