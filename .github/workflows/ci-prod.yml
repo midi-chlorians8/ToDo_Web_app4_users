@@ -1,0 +1,78 @@
+name: Deploy to ec2 instance dev
+
+on:
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-central-1
+
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set environment variable
+        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          # IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./app
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          # docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          # docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+
+      - name: SSH into instance and update docker-compose file
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.INSTANCE_HOST }}
+          username: ${{ secrets.INSTANCE_USER }}
+          key: ${{ secrets.INSTANCE_KEY }}
+          script_stop: true # stop script if any error occurs 
+          # script_timeout : 60 # timeout after 60 seconds 
+          script : |
+            # cd /home/ubuntu/ToDo_Web_app3/ # change this to your actual path  <cd /path/to/docker-compose/file>
+            # perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
+            # aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 734075410113.dkr.ecr.eu-central-1.amazonaws.com         
+            # docker-compose up -d # restart containers with new image 
+
+            cd /home/ubuntu/
+            if [ -d "ToDo_Web_app3" ]; then
+              cd ./ToDo_Web_app3
+              # docker-compose down --rmi all
+
+              docker-compose stop web
+              docker-compose rm web
+              #docker rmi $(docker images -q)
+
+              cd ..
+              sudo rm -r ToDo_Web_app3
+            fi
+            git clone https://github.com/midi-chlorians8/ToDo_Web_app3.git
+
+            cd /home/ubuntu/ToDo_Web_app3/
+            perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
+            docker-compose up -d # restart containers with new image
