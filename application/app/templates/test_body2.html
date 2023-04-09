@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заметки</title>
+    <style>
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }    #fullname {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px;
+    }
+</style>
+<script>
+    function getTokenFromCookie(cookieName) {
+        const cookieString = document.cookie;
+        const cookieArray = cookieString.split('; ');
+
+        for (const cookie of cookieArray) {
+            const [key, value] = cookie.split('=');
+            if (key === cookieName) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    async function loadMessages() {
+        const token = getTokenFromCookie('token');
+        const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=5`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            displayMessages(data.data);
+        } else {
+            console.error("Error loading messages");
+        }
+    }
+
+    function displayMessages(messages) {
+        const messageList = document.getElementById("messageList");
+        messageList.innerHTML = "";
+
+        messages.forEach(message => {
+            const li = document.createElement("li");
+            li.textContent = message.content; // Use the appropriate field to display the message content
+            messageList.appendChild(li);
+        });
+    }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const fullname = urlParams.get("fullname");
+        document.getElementById("fullname").textContent = fullname;
+        loadMessages();
+    }
+</script>
+</head>
+<body>
+    <div id="fullname"></div>
+    <div style="text-align: center;">
+        <h1>Мои заметки</h1>
+        <div style="width: 910px; margin-left: auto; margin-right: auto;">
+            <button style="font-size: 72px; width: 100%; height: 75px;" onclick="loadMessages()">+</button>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <div style="display: inline-flex;">
+            <div id="noteRectangle" style="border: 1px solid black; padding: 10px; width: 800px;">
+                <ul id="messageList"></ul>
+            </div>
+            <button id="minusButton" style="display: inline-flex; width: 80px; height: 20px; margin-left: 10px; align-self: center; font-size: 108px; text-align: center; line-height: 0; position: relative;">
+                <span class="centered">-</span>
+            </button>
+            <script>
+                document.getElementById('minusButton').style.height = document.getElementById('noteRectangle').offsetHeight + 'px';
+            </script>
+        </div>
+    </div>
+</body>
+</html>

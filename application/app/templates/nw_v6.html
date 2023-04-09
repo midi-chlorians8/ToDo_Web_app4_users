@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация пользователя</title>
     <script>
-        let token = "";
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
 
         async function submitForm(event) {
             event.preventDefault();
@@ -59,6 +67,7 @@
                 const result = await response.json();
                 console.log(result);
                 token = result.access_token;
+                setCookie("token", token, 1); // Set token as a cookie for 1 day
                 alert("Вход выполнен успешно!");
                 document.getElementById("continueButton").style.display = "block";
             } else {
@@ -68,37 +77,11 @@
             }
         }
 
-        async function navigateToNewPage() {
+        function navigateToNewPage() {
             const fullname = localStorage.getItem("fullname");
-
-            console.log("Fullname from localStorage: ", fullname);
-            const url = `http://0.0.0.0:8001/new_page?token=${token}&fullname=${encodeURIComponent(fullname)}`;
-            //window.location.href = url;
-
-            console.log("URL: ", url);
-            
-            const response = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Accept": "text/html",
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const text = await response.text();
-                const parser = new DOMParser();
-                const htmlDocument = parser.parseFromString(text, "text/html");
-                document.documentElement.replaceWith(htmlDocument.documentElement);
-            } else {
-                const error = await response.text();
-                console.error(error);
-                alert("Ошибка: " + error);
-            }
+            const url = `http://0.0.0.0:8001/new_page2?fullname=${encodeURIComponent(fullname)}`;
+            window.location.href = url;
         }
-
-
-        
     </script>
 </head>
 <body>
@@ -110,25 +93,24 @@
         <br>
 
         <label for="email">Эл. адрес:</label>
-
         <input type="email" id="email" name="email" required><br><br>
 
         <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required><br><br>
+            <input type="password" id="password" name="password" required><br><br>
 
-        <button type="submit">Зарегистрироваться</button>
-    </form>
-    <br>
-    <h2>Вход</h2>
-    <form id="loginForm">
-        <label for="loginEmail">Эл. адрес для входа:</label>
-        <input type="email" id="loginEmail" name="loginEmail" required><br><br>
-
-        <label for="loginPassword">Пароль для входа:</label>
-        <input type="password" id="loginPassword" name="loginPassword" required><br><br>
-
-        <button type="button" onclick="login()">Войти</button>
-    </form>
-    <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
-</body>
-</html>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <br>
+        <h2>Вход</h2>
+        <form id="loginForm">
+            <label for="loginEmail">Эл. адрес для входа:</label>
+            <input type="email" id="loginEmail" name="loginEmail" required><br><br>
+        
+            <label for="loginPassword">Пароль для входа:</label>
+            <input type="password" id="loginPassword" name="loginPassword" required><br><br>
+        
+            <button type="button" onclick="login()">Войти</button>
+        </form>
+        <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
+    </body>
+    </html>

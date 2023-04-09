@@ -12,6 +12,18 @@ posts = [
         "id": 1,
         "title": "Pancake",
         "content": "Lorem Ipsum ..."
+    },
+     {
+      "id": 2,
+      "title": "SaaT.",
+      "content": "Follow point my project plan",
+      "owner_id": "aa@gmail.com"
+    },
+    {
+      "id": 3,
+      "title": "Saa2T.",
+      "content": "Today I want to to 1,2,3 points",
+      "owner_id": "aa@gmail.com"
     }
 ]
 
@@ -29,8 +41,7 @@ origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    #allow_origins=origins,
-    allow_origins=['*'],
+    allow_origins=['*'], #allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,45 +60,16 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v2.html", {"request": request})
-
+    return templates.TemplateResponse("nw_v6.html", {"request": request})
 
 
 
 # helpers
-
 def check_user(data: UserLoginSchema):
     for user in users:
         if user.email == data.email and user.password == data.password:
             return True
     return False
-
-
-# route handlers
-
-# @app.get("/", tags=["root"])
-# async def read_root() -> dict:
-#     return {"message": "Welcome to your blog!"}
-
-
-
-
-
-# @app.get("/posts/{id}", tags=["posts"])
-# async def get_single_post(id: int) -> dict:
-#     if id > len(posts):
-#         return {
-#             "error": "No such post with the supplied ID."
-#         }
-
-#     for post in posts:
-#         if post["id"] == id:
-#             return {
-#                 "data": post
-#             }
-
-
-
 
 
 async def get_current_user(token: str = Depends(JWTBearer())) -> dict:
@@ -97,7 +79,6 @@ async def get_current_user(token: str = Depends(JWTBearer())) -> dict:
     else:
         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
     
-
 
 from fastapi import Cookie
 from typing import Optional
@@ -111,32 +92,8 @@ async def get_current_user_cook(token: Optional[str] = Cookie(None)) -> dict:
         return payload
     else:
         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
+   # helpers
 
-    
-# async def get_current_user(token: str = Depends(JWTBearer())) -> dict:
-#     payload = decodeJWT(token)
-#     if payload:
-#         return payload
-#     else:
-#         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
-
-
-# @app.get("/new_page", response_class=HTMLResponse)
-# async def new_page(
-#     request: Request,
-#     token: str = Query(...),
-#     fullname: str = Query(...),
-#     current_user: dict = Depends(get_current_user),
-# ):
-#     return templates.TemplateResponse("nbody2.html", {"request": request, "fullname": fullname})
-
-# @app.get("/new_page2", response_class=HTMLResponse)
-# async def new_page(
-#     request: Request,
-#     fullname: str = Query("Anonim"),
-#     current_user: dict = Depends(get_current_user),
-# ):
-#     return templates.TemplateResponse("index.html", {"request": request, "fullname": fullname})
 
 from typing import Optional
 
@@ -146,15 +103,11 @@ async def new_page(
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("index.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("test_body15.html", {"request": request, "fullname": fullname})
 
 
 
-
-
-
-
-
+# see posts
 @app.get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
 async def get_posts() -> dict:
     return { "data": posts }
@@ -180,7 +133,7 @@ async def get_posts(
         user_posts = user_posts[start:end]
     
     return {"data": user_posts}
-
+# see posts
 
 
 
@@ -212,17 +165,6 @@ async def delete_post(post_id: int, current_user: dict = Depends(get_current_use
         raise HTTPException(status_code=404, detail="Post not found or not owned by the current user.")
 
 
-
-
-# @app.post("/user/register", tags=["user"])
-# async def user_register(user: UserSchema = Body(...)):
-#     # Check if the user already exists
-#     for existing_user in users:
-#         if existing_user.email == user.email:
-#             raise HTTPException(status_code=400, detail="User already exists")
-
-#     users.append(user)  # Add user to the users list
-#     return {"email": user.email}  # Return the email of the registered user
 from fastapi.responses import RedirectResponse
 
 @app.post("/user/register", tags=["user"])
