@@ -60,7 +60,7 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v6.html", {"request": request})
+    return templates.TemplateResponse("nw_v64.html", {"request": request})
 
 
 
@@ -103,7 +103,7 @@ async def new_page(
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("test_body15.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("test_body17.html", {"request": request, "fullname": fullname})
 
 
 
