@@ -50,6 +50,12 @@ Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 
 1. Fork/Clone
 
+1. Install python venv:
+
+    ```sh
+    apt install python3.10-venv
+    ```
+
 1. Create and activate a virtual environment:
 
     ```sh
@@ -70,3 +76,10 @@ Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 
 1. Test at [http://localhost:8081/docs](http://localhost:8081/docs)
 Continue where you left off
+
+To start program in the background:
+nohup python main.py &
+
+To stop:
+ps aux | grep main.py
+kill <PID>
