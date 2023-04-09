@@ -58,12 +58,8 @@ If some port already busy (test on ubuntu) = sudo fuser -k 8000/tcp
 To clear all container images              = sudo docker system prune -a --volumes
 
 Links:
-remember general flow:
-https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/
-
-
-sources:
-https://testdriven.io/blog/fastapi-jwt-auth/
-https://github.com/testdrivenio/fastapi-jwt
-Securing FastAPI with JWT Token-based Authentication
+- https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/
+- https://testdriven.io/blog/fastapi-jwt-auth/
+- https://github.com/testdrivenio/fastapi-jwt
+- Securing FastAPI with JWT Token-based Authentication
 Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
