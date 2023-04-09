@@ -1,14 +1,8 @@
 # ToDo_Web_app4_users
-Test_proj_fastapi_users
+
+Our service allows users to create and manage notes with ease. You can easily register and login to start creating notes. With our service, you can create new notes or delete old ones with just a few clicks.
 
 
-
-
-# Securing FastAPI with JWT Token-based Authentication
-
-### Want to learn how to build this?
-
-Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 
 ## Want to use this project?
 
@@ -56,6 +50,9 @@ To clear all container images              = sudo docker system prune -a --volum
 Links:
 remember general flow:
 https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/
+
+# Securing FastAPI with JWT Token-based Authentication
+Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 
 sources:
 https://testdriven.io/blog/fastapi-jwt-auth/
