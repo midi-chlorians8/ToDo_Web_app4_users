@@ -17,7 +17,7 @@
             top: 0;
             right: 0;
             padding: 10px;
-        }    
+        }
         .note-container {
             display: inline-flex;
             margin-bottom: 10px;
@@ -27,6 +27,7 @@
         padding: 10px;
         width: 800px;
         box-sizing: border-box;
+        overflow-wrap: break-word;
     }
 
     .minus-button {
@@ -70,6 +71,29 @@
 
 </style>
 <script>
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function clearTokenCookie() {
+        setCookie("token", "", -1); // Expire the token cookie
+    }
+
+    function logout() {
+        clearTokenCookie();
+        localStorage.removeItem("fullname");
+        // Redirect the user to the login page or update the UI to reflect the logged-out state
+        window.location.href = "http://0.0.0.0:8001/"; // Replace with the URL of your login page
+    }
+
+
+
     function getTokenFromCookie(cookieName) {
         const cookieString = document.cookie;
         const cookieArray = cookieString.split('; ');
@@ -82,7 +106,6 @@
         }
         return null;
     }
-
     async function deleteNote(noteId) {
         const token = getTokenFromCookie("token");
 
@@ -99,7 +122,6 @@
             console.error("Error deleting note");
         }
     }
-
     async function loadMessages() {
         const token = getTokenFromCookie('token');
         const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=15`, {
@@ -127,8 +149,9 @@
 
             const noteRectangle = document.createElement("div");
             noteRectangle.className = "note-rectangle";
-            noteRectangle.textContent = message.content;
+            noteRectangle.textContent = message.content
             noteContainer.appendChild(noteRectangle);
+
             const minusButton = document.createElement("button");
             minusButton.className = "minus-button";
             minusButton.setAttribute("data-note-id", message.id);
@@ -191,7 +214,8 @@
 
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const fullname = urlParams.get("fullname");
+        // const fullname = urlParams.get("fullname");
+        const fullname = urlParams.get("fullname") || "Аноним";
         document.getElementById("fullname").textContent = fullname;
         loadMessages();
     }
@@ -202,9 +226,9 @@
         document.getElementById("submitBtn").style.height = this.style.height;
     });
 </script>
-
 </head>
 <body>
+    <button id="logoutBtn" type="button" onclick="logout()">Выйти</button>
     <div id="fullname"></div>
     <div style="text-align: center;">
         <h1>Мои заметки</h1>

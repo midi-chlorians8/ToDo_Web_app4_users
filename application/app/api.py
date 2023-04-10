@@ -58,13 +58,13 @@ import os
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
+from fastapi.staticfiles import StaticFiles
+app.mount("/static", StaticFiles(directory="application/app/static"), name="static")
+
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v61.html", {"request": request})
-
-@app.get("/m", response_class=HTMLResponse,tags=["root"])
-async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v65.html", {"request": request})
+    return templates.TemplateResponse("nw_v68.html", {"request": request})
+# last ok send name
 
 
 
@@ -107,7 +107,7 @@ async def new_page(
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("test_body17.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("test_body18m.html", {"request": request, "fullname": fullname})
 
 
 
