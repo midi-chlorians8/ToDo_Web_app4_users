@@ -1,4 +1,4 @@
-name: Deploy to ec2 instance dev
+name: Deploy to ec2 instance prod
 
 on:
   push:
