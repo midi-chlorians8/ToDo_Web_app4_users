@@ -6,7 +6,7 @@ Tech Stack
 This project uses the following technologies:
 Nessesary:
 - Python 3.10 - The programming language used for the backend.
-- FastAPI 0.95.0 - The web framework used for the backend.
+- FastAPI 0.89.1 - The web framework used for the backend.
 - HTML, CSS, and JavaScript - The front-end languages used to create the user interface.
 
 Not nessesary:
