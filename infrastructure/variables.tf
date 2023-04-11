@@ -17,7 +17,7 @@ variable "region" {
 variable "instance_type" {
   description = "Enter Instance Type"
   type        = string
-  default     = "t3.micro"
+  default     = "t3.nano"
 }
 
 variable "allow_ports" {

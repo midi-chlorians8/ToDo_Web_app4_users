@@ -1,5 +1,5 @@
 region                     = "eu-central-1"
-instance_type              = "t3.micro"
+instance_type              = "t3.nano"
 
 
 allow_ports = ["80","443","22","8000","8001"]

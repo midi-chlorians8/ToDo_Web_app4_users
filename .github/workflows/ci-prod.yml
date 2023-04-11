@@ -33,6 +33,9 @@ jobs:
       - name: Set environment variable
         run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      - name: Check current working directory
+        run: pwd
+
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}

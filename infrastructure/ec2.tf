@@ -70,7 +70,7 @@ resource "aws_iam_role_policy_attachment" "ecr_full_access" {
 
 resource "aws_instance" "my_serv_todo" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
+  instance_type = var.instance_type #"t3.micro"
 
   key_name      = var.key_name
   security_groups = [aws_security_group.example.name]
