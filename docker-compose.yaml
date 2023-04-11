@@ -11,8 +11,8 @@ services:
       - .:/app
     ports:
       - 8000:8000 #внеш / внутр
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     restart: always
 
   # db:
