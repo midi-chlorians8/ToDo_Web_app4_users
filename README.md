@@ -10,7 +10,7 @@ Nessesary:
 - HTML, CSS, and JavaScript - The front-end languages used to create the user interface.
 
 Not nessesary:
-- [Terraform](https://www.terraform.io/) - Terraform Cloud enables infrastructure automation for provisioning!
+- [Terraform](https://www.terraform.io/) - Terraform v1.4.4 Cloud enables infrastructure automation for provisioning!
 - [AWS cloud](https://aws.amazon.com/what-is-aws/) - I use ec2 instance, elastic ip, ECR in AWS cloud 
 - [GitHub Actions](https://github.com/features/actions)- GitHub Actions is a CI/CD platform that allows you to automate your software development workflows right in your repository. 
 ## Want to use this project local?
