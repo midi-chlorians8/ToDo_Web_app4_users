@@ -37,6 +37,7 @@ jobs:
         run: |
           pwd
           ls
+          cd application
 
       - name: Build, tag, and push image to Amazon ECR
         env:
