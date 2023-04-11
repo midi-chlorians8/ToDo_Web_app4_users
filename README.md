@@ -156,9 +156,16 @@ we need to do some steps manually
 If some port already busy (test on ubuntu) = sudo fuser -k 8000/tcp
 To clear all container images              = sudo docker system prune -a --volumes
 
+sudo docker stop $(sudo docker ps -aq) to stop all running containers.
+sudo docker rm $(sudo docker ps -aq) to remove all containers. This will not delete any data volumes.
+sudo docker-compose up
+
 Links:
 - https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/
 - https://testdriven.io/blog/fastapi-jwt-auth/
 - https://github.com/testdrivenio/fastapi-jwt
 - Securing FastAPI with JWT Token-based Authentication
 Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
+
+
+sudo docker stop $(sudo docker ps -aq) && sudo docker rm $(sudo docker ps -aq) && sudo docker system prune -a --volumes
