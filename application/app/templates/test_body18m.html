@@ -153,7 +153,7 @@
             clearTokenCookie();
             localStorage.removeItem("fullname");
             // Redirect the user to the login page or update the UI to reflect the logged-out state
-            window.location.href = "http://0.0.0.0:8001/"; // Replace with the URL of your login page
+            window.location.href = "http://0.0.0.0:8000/"; // Replace with the URL of your login page
         }
     
     
@@ -173,7 +173,7 @@
         async function deleteNote(noteId) {
             const token = getTokenFromCookie("token");
     
-            const response = await fetch(`http://0.0.0.0:8001/posts/${noteId}`, {
+            const response = await fetch(`http://0.0.0.0:8000/posts/${noteId}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -188,7 +188,7 @@
         }
         async function loadMessages() {
             const token = getTokenFromCookie('token');
-            const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=15`, {
+            const response = await fetch(`http://0.0.0.0:8000/sec_posts_query?start=0&end=15`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -256,7 +256,7 @@
                 owner_id: ownerId
             };
     
-            const response = await fetch("http://0.0.0.0:8001/posts", {
+            const response = await fetch("http://0.0.0.0:8000/posts", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

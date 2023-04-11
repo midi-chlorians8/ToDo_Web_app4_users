@@ -95,7 +95,7 @@
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
-        const response = await fetch("http://0.0.0.0:8001/user/register", {
+        const response = await fetch("http://0.0.0.0:8000/user/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -129,7 +129,7 @@
         }
     async function login(email, password) {
         //logout();
-        const response = await fetch("http://0.0.0.0:8001/user/login", {
+        const response = await fetch("http://0.0.0.0:8000/user/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -156,7 +156,7 @@
 
     function navigateToNewPage() {
         const fullname = localStorage.getItem("fullname");
-        const url = `http://0.0.0.0:8001/new_page2?fullname=${encodeURIComponent(fullname)}`;
+        const url = `http://0.0.0.0:8000/new_page2?fullname=${encodeURIComponent(fullname)}`;
         window.location.href = url;
     }
 

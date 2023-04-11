@@ -59,7 +59,7 @@ templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templa
 templates = Jinja2Templates(directory=templates_dir)
 
 from fastapi.staticfiles import StaticFiles
-app.mount("/static", StaticFiles(directory="application/app/static"), name="static")
+#app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
