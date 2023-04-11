@@ -1,8 +1,8 @@
 #FROM python:3.10.10-slim
 FROM python:3.11-slim
 
-WORKDIR /app
-
+#WORKDIR /app
+WORKDIR /application
 
 
 # install dependencies
