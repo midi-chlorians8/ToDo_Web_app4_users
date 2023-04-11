@@ -9,7 +9,7 @@ on:
 
 env:
   AWS_REGION: eu-central-1
-
+  APP_DIR: ToDo_Web_app4_users
 
 jobs:
   deploy:
@@ -62,14 +62,11 @@ jobs:
           script_stop: true # stop script if any error occurs 
           # script_timeout : 60 # timeout after 60 seconds 
           script : |
-            # cd /home/ubuntu/ToDo_Web_app3/ # change this to your actual path  <cd /path/to/docker-compose/file>
-            # perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
-            # aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 734075410113.dkr.ecr.eu-central-1.amazonaws.com         
-            # docker-compose up -d # restart containers with new image 
+
 
             cd /home/ubuntu/
-            if [ -d "ToDo_Web_app3" ]; then
-              cd ./ToDo_Web_app3
+            if [ -d "${{ env.APP_DIR }}" ]; then
+              cd ./${{ env.APP_DIR }}
               # docker-compose down --rmi all
 
               docker-compose stop web
@@ -77,10 +74,11 @@ jobs:
               #docker rmi $(docker images -q)
 
               cd ..
-              sudo rm -r ToDo_Web_app3
+              sudo rm -r ${{ env.APP_DIR }}
             fi
-            git clone https://github.com/midi-chlorians8/ToDo_Web_app3.git
+            
+            git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
 
-            cd /home/ubuntu/ToDo_Web_app3/
+            cd /home/ubuntu/${{ env.APP_DIR }}/
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
             docker-compose up -d # restart containers with new image
