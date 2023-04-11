@@ -35,6 +35,7 @@ jobs:
 
       - name: Check current working directory
         run: pwd
+        run: ls
 
       - name: Build, tag, and push image to Amazon ECR
         env:
