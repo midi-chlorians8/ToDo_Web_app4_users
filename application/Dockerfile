@@ -2,8 +2,8 @@
 FROM python:3.11-slim
 
 #WORKDIR /app
-WORKDIR /application
-
+#WORKDIR /application
+WORKDIR /
 
 # install dependencies
 COPY requirements.txt .
