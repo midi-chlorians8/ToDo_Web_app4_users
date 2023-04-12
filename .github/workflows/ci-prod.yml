@@ -65,12 +65,12 @@ jobs:
           script : |
             cd /home/ubuntu/
 
-            # if [ ! -d "${{ env.APP_DIR }}" ]; then
-            #     git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
-            # else
-            #     cd "${{ env.APP_DIR }}"
-            #     git pull
-            # fi
+            if [ ! -d "${{ env.APP_DIR }}" ]; then
+                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
+            else
+                cd "${{ env.APP_DIR }}"
+                git pull
+            fi
 
             # cd /home/ubuntu/${{ env.APP_DIR }}/
             # perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
