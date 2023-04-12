@@ -66,17 +66,7 @@ jobs:
 
 
             cd /home/ubuntu/
-            # if [ -d "${{ env.APP_DIR }}" ]; then
-            #   cd ./${{ env.APP_DIR }}
-            #   # docker-compose down --rmi all
 
-            #   docker-compose stop web
-            #   docker-compose rm web
-            #   #docker rmi $(docker images -q)
-
-            #   cd ..
-            #   sudo rm -r ${{ env.APP_DIR }}
-            # fi
             if [ ! -d "${{ env.APP_DIR }}" ]; then
                 git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
             else
@@ -86,7 +76,7 @@ jobs:
 
             cd /home/ubuntu/${{ env.APP_DIR }}/
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
-            #docker-compose up -d # restart containers with new image
+
 
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
             docker-compose up -d web
