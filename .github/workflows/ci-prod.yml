@@ -63,7 +63,7 @@ jobs:
           script_stop: true # stop script if any error occurs 
           # script_timeout : 60 # timeout after 60 seconds 
           script : |
-            # cd /home/ubuntu/
+            cd /home/ubuntu/
 
             # if [ ! -d "${{ env.APP_DIR }}" ]; then
             #     git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
