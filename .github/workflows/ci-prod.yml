@@ -85,4 +85,5 @@ jobs:
 
             cd /home/ubuntu/${{ env.APP_DIR }}/
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
-            docker-compose up -d # restart containers with new image
+            #docker-compose up -d # restart containers with new image
+            docker-compose up -d web
