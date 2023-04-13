@@ -171,9 +171,11 @@ Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 How to make https certs:
 1) uncomment nginx and certbot in docker-compose
 2) sudo su
+2.5) redact files init-letsencrypt.sh and data/nginx/app.conf
+replace to actual dns name server
 3) ./init-letsencrypt.sh
 
-uncomment 
+uncomment:
 upstream fastapi {
        server web:8000;
 }
@@ -182,3 +184,5 @@ upstream fastapi {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }  
+
+docker-compose exec nginx nginx -s reload
