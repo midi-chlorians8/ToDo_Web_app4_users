@@ -68,10 +68,6 @@ jobs:
             if [ ! -d "${{ env.APP_DIR }}" ]; then
                 git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
             fi    
-            # else
-            #     cd "${{ env.APP_DIR }}"
-            #     git pull
-            # fi
 
             cd /home/ubuntu/${{ env.APP_DIR }}/
             git pull
@@ -79,12 +75,3 @@ jobs:
 
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
             docker-compose up -d web
-
-
-
-                        if [ ! -d "ToDo_Web_app4_users" ]; then
-                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
-                        else
-                cd "ToDo_Web_app4_users"
-                git pull
-            fi 
