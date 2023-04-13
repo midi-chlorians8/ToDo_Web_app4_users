@@ -1,10 +1,8 @@
 from fastapi import FastAPI, Body, Depends, HTTPException, Query
 
-
 from app.model import PostSchema, UserSchema, UserLoginSchema
 from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import signJWT, decodeJWT
-
 
 
 posts = [

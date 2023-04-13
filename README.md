@@ -166,6 +166,3 @@ Links:
 - https://github.com/testdrivenio/fastapi-jwt
 - Securing FastAPI with JWT Token-based Authentication
 Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
-
-
-sudo docker stop $(sudo docker ps -aq) && sudo docker rm $(sudo docker ps -aq) && sudo docker system prune -a --volumes
