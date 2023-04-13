@@ -172,3 +172,13 @@ How to make https certs:
 1) uncomment nginx and certbot in docker-compose
 2) sudo su
 3) ./init-letsencrypt.sh
+
+uncomment 
+upstream fastapi {
+       server web:8000;
+}
+    location / {
+        proxy_pass http://fastapi;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }  
