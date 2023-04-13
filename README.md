@@ -166,3 +166,9 @@ Links:
 - https://github.com/testdrivenio/fastapi-jwt
 - Securing FastAPI with JWT Token-based Authentication
 Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
+
+
+How to make https certs:
+1) uncomment nginx and certbot in docker-compose
+2) sudo su
+3) ./init-letsencrypt.sh
