@@ -1,1 +1,31 @@
-123
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Пример страницы с полем для ввода текста, растягивающегося вверх</title>
+	<style>
+		textarea {
+			resize: none; /* отключаем возможность изменения размера */
+			overflow: hidden; /* скрываем содержимое, выходящее за границы поля */
+			height: auto; /* начальная высота поля - автоматическая */
+			min-height: 50px; /* минимальная высота поля - 50 пикселей */
+			box-sizing: border-box; /* высота поля не будет включать в себя границы и отступы */
+			padding: 10px; /* добавляем небольшие отступы */
+			font-size: 16px; /* размер шрифта */
+			line-height: 1.5; /* межстрочный интервал */
+		}
+	</style>
+</head>
+<body>
+	<form>
+		<label for="input-text">Введите текст:</label>
+		<textarea id="input-text" name="input-text" rows="1"></textarea>
+	</form>
+	<script>
+		const textarea = document.querySelector('#input-text');
+		textarea.addEventListener('input', () => {
+			textarea.style.height = 'auto'; // устанавливаем начальную высоту поля
+			textarea.style.height = `${textarea.scrollHeight}px`; // растягиваем поле вверх до высоты содержимого
+		});
+	</script>
+</body>
+</html>

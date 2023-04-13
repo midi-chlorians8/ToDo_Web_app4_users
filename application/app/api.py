@@ -105,7 +105,7 @@ async def new_page(
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("test_body18m_https.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("test_body18m_https_adapt.html", {"request": request, "fullname": fullname})
 
 
 
