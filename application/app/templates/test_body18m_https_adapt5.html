@@ -128,6 +128,7 @@
     border: 1px solid #21f80a;
     color: #21f80a;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 #addNoteBtn:hover {
@@ -183,8 +184,19 @@ html, body {
         margin-right: auto;
         margin-bottom: 10px;
     }
-}
 
+    #addNoteBtn {
+        font-size: 48px;
+        height: 50px;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+@media (max-width: 767px) {
+    #mainContainer {
+        width: 100%;
+    }
+}
     </style>
     <script>
          function setCookie(name, value, days) {
@@ -349,7 +361,7 @@ html, body {
     <div id="fullname"></div>
     <div style="text-align: center;">
         <h1>Мои заметки</h1>
-        <div style="width: 910px; margin-left: auto; margin-right: auto;">
+        <div id="mainContainer">
             <button id="addNoteBtn" style="font-size: 72px; width: 100%; height: 75px;" onclick="createNote()">+</button>
         </div>
         <div id="inputContainer">
