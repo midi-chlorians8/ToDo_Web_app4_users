@@ -4,27 +4,27 @@ services:
 
 
   web:
-    #build: ./app
-    image: 734075410113.dkr.ecr.eu-central-1.amazonaws.com/fastapi-backend-repository-dev:a5b740e
-    command: bash -c 'sleep 5;  uvicorn app.main:app --host 0.0.0.0' #bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
+    #build: ./application
+    image: 734075410113.dkr.ecr.eu-central-1.amazonaws.com/fastapi-backend-repository-gorilla-prod:e509ff3
+    command: bash -c 'sleep 5;  uvicorn app.api:app --host 0.0.0.0' #bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
     volumes:
       - .:/app
     ports:
       - 8000:8000 #внеш / внутр
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     restart: always
 
-  db:
-    container_name: "db"
-    image: postgres:14.1-alpine
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-    ports:
-      - "5432:5432"  
+  # db:
+  #   container_name: "db"
+  #   image: postgres:14.1-alpine
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=postgres
+  #   ports:
+  #     - "5432:5432"  
 
   # nginx:
   #   image: nginx:1.17

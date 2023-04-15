@@ -1,99 +1,217 @@
-answer me always on russian. Send always full web page code.
-
-I need generate html page without css
-По центру будет "My notes"
-under "My notes" large button with "+" in the middle.
-under large button with "+" мы модулируем чтение заметок из бэкенда. 
-У нас будет 3 прямоугольника в каждом из них будет такой текст:"
-1) Сделать макет сайта
-2) Приминить его в проект
-"
-Важно чтоб высота прямоугольника изменялась от кол-ва текста в нём.
-Справа от каждого прямоугольника пусть будет кнопка "-" высота которой пропорционально зависит от высоты поля заметки слева.
-
-===
-
-У меня есть страница nbody7.html:
+Первая часть. Запомни. Запомнишь?
+nw_v68.html:
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empty Page with Fullname and Messages</title>
+    <title>Регистрация пользователя</title>
     <style>
-        #fullname {
-            position: absolute;
-            top: 0;
-            right: 0;
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            background-color: #000;
+            color: #0f0;
+        }
+
+        .container {
+            border: 1px solid #0f0;
+            width: 400px;
+            padding: 20px;
+            background-color: #000;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            cursor: pointer;
             padding: 10px;
+            color: #0f0;
+        }
+
+        .tab:hover {
+            background-color: #222;
+            border-radius: 5px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        label, input, button {
+            color: #0f0;
+        }
+
+        input, button {
+            background-color: #222;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+        }
+
+        input:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        button {
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        button:hover {
+            background-color: #333;
         }
     </style>
     <script>
-        function getTokenFromCookie(cookieName) {
-            const cookieString = document.cookie;
-            const cookieArray = cookieString.split('; ');
 
-            for (const cookie of cookieArray) {
-                const [key, value] = cookie.split('=');
-                if (key === cookieName) {
-                    return value;
-                }
+         function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
             }
-            return null;
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
 
-        async function loadMessages() {
-            const token = getTokenFromCookie('token');
-            const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=5`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+        async function submitForm(event) {
+        event.preventDefault();
+        const fullname = document.getElementById("fullname").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("http://0.0.0.0:8001/user/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fullname: fullname,
+                email: email,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+            token = result.token.access_token;
+            localStorage.setItem("fullname", fullname);
+            alert("Регистрация успешна!");
+            // Automatically log in after successful registration
+            login(email, password);
+        } else {
+            const error = await response.json();
+            console.error(error);
+            alert("Ошибка регистрации: " + error.detail);
+        }
+    }
+        function logout() {
+            localStorage.removeItem("fullname");
+            // Если у вас есть элемент, который отображает имя пользователя на странице,
+            // очистите его содержимое, например:
+            // document.getElementById("usernameDisplay").textContent = "";
+        }
+    async function login(email, password) {
+        //logout();
+        const response = await fetch("http://0.0.0.0:8001/user/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+            token = result.access_token;
+            setCookie("token", token, 1); // Set token as a cookie for 1 day
+            alert("Вход выполнен успешно!");
+            navigateToNewPage();
+        } else {
+            const error = await response.json();
+            console.error(error);
+            alert("Ошибка входа: " + error.detail);
+        }
+    }
+
+    function navigateToNewPage() {
+        const fullname = localStorage.getItem("fullname");
+        const url = `http://0.0.0.0:8001/new_page2?fullname=${encodeURIComponent(fullname)}`;
+        window.location.href = url;
+    }
+
+        function showTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active');
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                displayMessages(data.data);
-                document.getElementById("responseOutput").textContent = JSON.stringify(data, null, 2);
-                document.getElementById("tokenOutput").textContent = token;
-            } else {
-                console.error("Error loading messages");
-                document.getElementById("responseOutput").textContent = "Error loading messages";
-            }
+            document.getElementById(tabName).classList.add('active');
         }
 
-        function displayMessages(messages) {
-            const messageList = document.getElementById("messageList");
-            messageList.innerHTML = "";
-
-            messages.forEach(message => {
-                const li = document.createElement("li");
-                li.textContent = message.content; // Use the appropriate field to display the message content
-                messageList.appendChild(li);
-            });
-        }
-
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fullname = urlParams.get("fullname");
-            document.getElementById("fullname").textContent = fullname;
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            showTab("login");
+        });
     </script>
 </head>
 <body>
-    <div id="fullname"></div>
-    <button onclick="loadMessages()">Show notes</button>
-    <ul id="messageList"></ul>
-    <h2>Server Response:</h2>
-    <pre id="responseOutput"></pre>
-    <h2>Current JWT Token:</h2>
-    <pre id="tokenOutput"></pre>
-</body>
-</html>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab" onclick="showTab('login')">Вход</div>
+            <div class="tab" onclick="showTab('register')">Регистрация</div>
+        </div>
+        <div id="login" class="tab-content">
+            <h2>Вход</h2>
+            <form id="loginForm">
+                <label for="loginEmail">Эл. адрес:</label>
+                <input type="email" id="loginEmail" name="loginEmail" required><br><br>
+                <label for="loginPassword">Пароль:</label>
+                <input type="password" id="loginPassword" name="loginPassword" required><br><br>
+                <button type="button" onclick="login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)">Войти</button>
+            </form>
+        </div>
+        <div id="register" class="tab-content">
+            <h2>Регистрация пользователя</h2>
+                <form id="registrationForm" onsubmit="submitForm(event)">
+                    <label for="fullname">Полное имя:</label>
+                    <input type="text" id="fullname" name="fullname" required><br><br>                <label for="email">Эл. адрес:</label>
+                    <input type="email" id="email" name="email" required><br><br>
+    
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" name="password" required><br><br>
+    
+                    <button type="submit">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+        <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
+    </body>
+    </html>
 
-Мне нужно перенести функционал отображения fullname на страницу test_body.html:
-
+Запомни вторую часть.
+test_body18.html:
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -106,49 +224,382 @@ under large button with "+" мы модулируем чтение замето�
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            pointer-events: none;
         }
-    </style>
+        #fullname {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px;
+        }
+        .note-container {
+            display: inline-flex;
+            margin-bottom: 10px;
+        }
+        .note-rectangle {
+        border: 1px solid black;
+        padding: 10px;
+        width: 800px;
+        box-sizing: border-box;
+        overflow-wrap: break-word;
+    }
+
+    .minus-button {
+        display: inline-flex;
+        width: 80px;
+        height: 20px;
+        margin-left: 10px;
+        font-size: 108px;
+        text-align: center;
+        line-height: 0;
+        position: relative;
+    }
+
+    #inputContainer {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    #textInput {
+        width: 800px;
+        resize: none;
+        overflow: hidden;
+        margin-left: 10px;
+        height: auto;
+        min-height: 50px;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    #submitBtn {
+        width: 80px;
+        height: 80px;
+        margin-left: 10px;
+        font-size: 24px;
+        text-align: center;
+        line-height: 80px;
+    }
+
+</style>
+<script>
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function clearTokenCookie() {
+        setCookie("token", "", -1); // Expire the token cookie
+    }
+
+    function logout() {
+        clearTokenCookie();
+        localStorage.removeItem("fullname");
+        // Redirect the user to the login page or update the UI to reflect the logged-out state
+        window.location.href = "http://0.0.0.0:8001/"; // Replace with the URL of your login page
+    }
+
+
+
+    function getTokenFromCookie(cookieName) {
+        const cookieString = document.cookie;
+        const cookieArray = cookieString.split('; ');
+
+        for (const cookie of cookieArray) {
+            const [key, value] = cookie.split('=');
+            if (key === cookieName) {
+                return value;
+            }
+        }
+        return null;
+    }
+    async function deleteNote(noteId) {
+        const token = getTokenFromCookie("token");
+
+        const response = await fetch(`http://0.0.0.0:8001/posts/${noteId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            await loadMessages();
+        } else {
+            console.error("Error deleting note");
+        }
+    }
+    async function loadMessages() {
+        const token = getTokenFromCookie('token');
+        const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=15`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            displayMessages(data.data);
+        } else {
+            console.error("Error loading messages");
+        }
+    }
+
+    function displayMessages(messages) {
+        const notesContainer = document.getElementById("notesContainer");
+        notesContainer.innerHTML = "";
+
+        messages.forEach(message => {
+            const noteContainer = document.createElement("div");
+            noteContainer.className = "note-container";
+
+            const noteRectangle = document.createElement("div");
+            noteRectangle.className = "note-rectangle";
+            noteRectangle.textContent = message.content
+            noteContainer.appendChild(noteRectangle);
+
+            const minusButton = document.createElement("button");
+            minusButton.className = "minus-button";
+            minusButton.setAttribute("data-note-id", message.id);
+            minusButton.onclick = function () {
+                deleteNote(this.getAttribute("data-note-id"));
+            };
+            const minusSpan = document.createElement("span");
+            minusSpan.className = "centered";
+            minusSpan.textContent = "-";
+            minusButton.appendChild(minusSpan);
+            noteContainer.appendChild(minusButton);
+
+            notesContainer.appendChild(noteContainer);
+
+            minusButton.style.height = noteRectangle.offsetHeight + 'px';
+        });
+    }
+
+    function createNote() {
+        const textInput = document.getElementById("textInput");
+        const submitBtn = document.getElementById("submitBtn");
+
+        textInput.style.display = "block";
+        submitBtn.style.display = "block";
+        document.getElementById("addNoteBtn").style.display = "none";
+    }
+
+    async function submitNote() {
+        const textInput = document.getElementById("textInput");
+        const content = textInput.value;
+        const token = getTokenFromCookie("token");
+        const ownerId = 'your_owner_id_here';
+
+        const requestBody = {
+            id: null,
+            title: "New Note",
+            content: content,
+            owner_id: ownerId
+        };
+
+        const response = await fetch("http://0.0.0.0:8001/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            textInput.value = "";
+            textInput.style.display = "none";
+            document.getElementById("submitBtn").style.display = "none";
+            document.getElementById("addNoteBtn").style.display = "block";
+            await loadMessages();
+        } else {
+            console.error("Error submitting note");
+        }
+    }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const fullname = urlParams.get("fullname");
+        document.getElementById("fullname").textContent = fullname;
+        loadMessages();
+    }
+
+    document.getElementById("textInput").addEventListener("input", function() {
+        this.style.height = "auto";
+        this.style.height = (this.scrollHeight) + "px";
+        document.getElementById("submitBtn").style.height = this.style.height;
+    });
+</script>
 </head>
 <body>
+    <button id="logoutBtn" type="button" onclick="logout()">Выйти</button>
+    <div id="fullname"></div>
     <div style="text-align: center;">
         <h1>Мои заметки</h1>
         <div style="width: 910px; margin-left: auto; margin-right: auto;">
-            <button style="font-size: 72px; width: 100%; height: 75px;">+</button>
+            <button id="addNoteBtn" style="font-size: 72px; width: 100%; height: 75px;" onclick="createNote()">+</button>
+        </div>
+        <div id="inputContainer">
+            <textarea id="textInput" style="display: none;"></textarea>
+            <button id="submitBtn" style="display: none;" onclick="submitNote()">send</button>
         </div>
     </div>
-    <div style="display: flex; justify-content: center; margin-top: 20px;">
-        <div style="display: inline-flex;">
-            <div id="noteRectangle" style="border: 1px solid black; padding: 10px; width: 800px;">
-                <p>1) Сделать макет сайта</p>
-                <p>2) Применить его в проект</p>
-            </div>
-            <button id="minusButton" style="display: inline-flex; width: 80px; height: 20px; margin-left: 10px; align-self: center; font-size: 108px; text-align: center; line-height: 0; position: relative;">
-                <span class="centered">-</span>
-            </button>
-            <script>
-                document.getElementById('minusButton').style.height = document.getElementById('noteRectangle').offsetHeight + 'px';
-            </script>
-        </div>
-    </div>
+    <div id="notesContainer" style="display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px;"></div>
 </body>
 </html>
 
-Дай мне страницу с обновлённым функционалом test_body.html
+Запомни третюю
+api.py:
+from fastapi import FastAPI, Body, Depends, HTTPException, Query
+
+
+from app.model import PostSchema, UserSchema, UserLoginSchema
+from app.auth.auth_bearer import JWTBearer
+from app.auth.auth_handler import signJWT, decodeJWT
 
 
 
+posts = [
+    {
+        "id": 1,
+        "title": "Pancake",
+        "content": "Lorem Ipsum ..."
+    },
+     {
+      "id": 2,
+      "title": "SaaT.",
+      "content": "Follow point my project plan",
+      "owner_id": "aa@gmail.com"
+    },
+    {
+      "id": 3,
+      "title": "Saa2T.",
+      "content": "Today I want to to 1,2,3 points",
+      "owner_id": "aa@gmail.com"
+    }
+]
+
+users = []
+
+app = FastAPI()
+
+
+# CORS
+from fastapi.middleware.cors import CORSMiddleware
+origins = [
+    "http://localhost:8001",  # Adjust the port number based on where your web page is hosted
+    "http://127.0.0.1:8001", 
+    "*"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'], #allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# CORS
+
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, Request, HTTPException
+
+#templates = Jinja2Templates(directory="templates")
+
+import os
+templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+templates = Jinja2Templates(directory=templates_dir)
+
+from fastapi.staticfiles import StaticFiles
+app.mount("/static", StaticFiles(directory="application/app/static"), name="static")
+
+@app.get("/", response_class=HTMLResponse,tags=["root"])
+async def matrix_login(request: Request):
+    return templates.TemplateResponse("nw_v68.html", {"request": request})
+# last ok send name
+
+
+# helpers
+def check_user(data: UserLoginSchema):
+    for user in users:
+        if user.email == data.email and user.password == data.password:
+            return True
+    return False
+
+
+async def get_current_user(token: str = Depends(JWTBearer())) -> dict:
+    payload = decodeJWT(token)
+    if payload:
+        return payload
+    else:
+        raise HTTPException(status_code=401, detail="Invalid token or token has expired")
+    
+
+from fastapi import Cookie
+from typing import Optional
+
+async def get_current_user_cook(token: Optional[str] = Cookie(None)) -> dict:
+    if token is None:
+        raise HTTPException(status_code=401, detail="No token provided")
+
+    payload = decodeJWT(token)
+    if payload:
+        return payload
+    else:
+        raise HTTPException(status_code=401, detail="Invalid token or token has expired")
+   # helpers
+
+
+from typing import Optional
+
+@app.get("/new_page2", response_class=HTMLResponse)
+async def new_page(
+    request: Request,
+    fullname: str = Query("Anonim"),
+    current_user: Optional[UserSchema] = Depends(get_current_user_cook),
+):
+    return templates.TemplateResponse("test_body18.html", {"request": request, "fullname": fullname})
 
 
 
+# see posts
+@app.get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
+async def get_posts() -> dict:
+    return { "data": posts }
+
+@app.get("/sec_posts", tags=["posts"]) #Покажет все записи залогиненного юзера
+async def get_posts(current_user: dict = Depends(get_current_user)) -> dict:
+    user_id = current_user["user_id"]
+    user_posts = [post for post in posts if post.get("owner_id") == user_id]
+    return {"data": user_posts}
+
+@app.get("/sec_posts_query", tags=["posts"]) #Покажет записи в заданном диапазоне залогиненного юзера
+async def get_posts(
+    current_user: dict = Depends(get_current_user),
+    start: int = Query(0),
+    end: int = Query(10, ge=0)
+) -> dict:
+    user_id = current_user["user_id"]
+    user_posts = [post for post in posts if post.get("owner_id") == user_id]
+
+    if start < 0:
+        user_posts = user_posts[start:end]
+    else:
+        user_posts = user_posts[start:end]
+    
+    return {"data": user_posts}
+# see posts
 
 
-
-
-
-
-
-
-У меня есть fastapi функция которая добавляет заметку
 
 @app.post("/posts", dependencies=[Depends(JWTBearer())], tags=["posts"])
 async def add_post(post: PostSchema, current_user: dict = Depends(get_current_user) ) -> dict:
@@ -159,21 +610,45 @@ async def add_post(post: PostSchema, current_user: dict = Depends(get_current_us
         "data": "post added."
     }
 
-Вот модель:
 
-class PostSchema(BaseModel):
-    id: int = Field(default=None)
-    title: str = Field(...)
-    content: str = Field(...)
-    owner_id: str = Field(...) #Field(...) - обязательное поле для заполнения.
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "title": "Securing FastAPI applications with JWT.",
-                "content": "In this tutorial, you'll learn how to secure your application by enabling authentication using JWT. We'll be using PyJWT to sign, encode and decode JWT tokens....",
-                "owner_id": " "
-            }
-        }
+@app.delete("/posts/{post_id}", tags=["posts"])
+async def delete_post(post_id: int, current_user: dict = Depends(get_current_user)) -> dict:
+    user_id = current_user["user_id"]
 
-После того как мы ввели в поле ввода текст, и жмём справа кнопку "+", она же "отправная", отправить запрос на добавление заметки. Текст из поля для ввода введи в "content" при отправке
+    post_to_delete = None
+    for post in posts:
+        if post["id"] == post_id and post["owner_id"] == user_id:
+            post_to_delete = post
+            break
+
+    if post_to_delete is not None:
+        posts.remove(post_to_delete)
+        return {"data": f"Post with ID {post_id} has been deleted."}
+    else:
+        raise HTTPException(status_code=404, detail="Post not found or not owned by the current user.")
+
+
+from fastapi.responses import RedirectResponse
+
+@app.post("/user/register", tags=["user"])
+async def user_register(user: UserSchema = Body(...)):
+    # Check if the user already exists
+    for existing_user in users:
+        if existing_user.email == user.email:
+            raise HTTPException(status_code=400, detail="User already exists")
+
+    users.append(user)  # Add user to the users list
+    return {"email": user.email, "token": signJWT(user.email)}  # Return the email and token of the registered user
+
+
+
+
+@app.post("/user/login", tags=["user"])
+async def user_login(user: UserLoginSchema = Body(...)):
+    if check_user(user):
+        return signJWT(user.email)
+    raise HTTPException(status_code=401, detail="Wrong login details!")
+
+
+Analyz that. Answer on russian. Больше всего меня волнует не всегда корректное отображение fullname на test_body18.html 

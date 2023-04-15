@@ -1,10 +1,8 @@
 from fastapi import FastAPI, Body, Depends, HTTPException, Query
 
-
 from app.model import PostSchema, UserSchema, UserLoginSchema
 from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import signJWT, decodeJWT
-
 
 
 posts = [
@@ -58,13 +56,13 @@ import os
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
+from fastapi.staticfiles import StaticFiles
+#app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v61.html", {"request": request})
-
-@app.get("/m", response_class=HTMLResponse,tags=["root"])
-async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v65.html", {"request": request})
+    return templates.TemplateResponse("nw_v68_https.html", {"request": request})
+# last ok send name
 
 
 
@@ -107,7 +105,7 @@ async def new_page(
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("test_body17.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("test_body18m_https_adapt6.html", {"request": request, "fullname": fullname})
 
 
 
@@ -189,5 +187,25 @@ async def user_login(user: UserLoginSchema = Body(...)):
     if check_user(user):
         return signJWT(user.email)
     raise HTTPException(status_code=401, detail="Wrong login details!")
+
+
+
+
+@app.get("/policy", response_class=HTMLResponse)
+async def get_policy(
+    # request: Request,
+    # fullname: str = Query("Anonim"),
+    # current_user: Optional[UserSchema] = Depends(get_current_user_cook),
+):
+    return templates.TemplateResponse("policy.html")
+
+
+@app.get("/policy2", response_class=HTMLResponse)
+async def get_policy(
+    # request: Request,
+    # fullname: str = Query("Anonim"),
+    # current_user: Optional[UserSchema] = Depends(get_current_user_cook),
+):
+    return {"user_id": "the current user"}
 
 

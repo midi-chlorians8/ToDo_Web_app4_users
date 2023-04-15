@@ -4,49 +4,81 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация пользователя</title>
     <style>
-        #container {
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            background-color: #000;
+            color: #0f0;
         }
-    
-        #form-wrapper {
-            border: 1px solid black;
+
+        .container {
+            border: 1px solid #0f0;
+            width: 400px;
             padding: 20px;
+            background-color: #000;
             border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
-    
-        #tab-wrapper {
+
+        .tabs {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             margin-bottom: 20px;
         }
-    
+
         .tab {
-            padding: 10px;
-            background-color: lightgray;
             cursor: pointer;
+            padding: 10px;
+            color: #0f0;
         }
-    
-        .active {
-            background-color: white;
-            font-weight: bold;
+
+        .tab:hover {
+            background-color: #222;
+            border-radius: 5px;
         }
-    
-        .form {
+
+        .tab-content {
             display: none;
         }
-    
-        .form.active {
+
+        .tab-content.active {
             display: block;
         }
+
+        label, input, button {
+            color: #0f0;
+        }
+
+        input, button {
+            background-color: #222;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+        }
+
+        input:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        button {
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
     </style>
-    
-    <title>Регистрация пользователя</title>
     <script>
-        function setCookie(name, value, days) {
+         function setCookie(name, value, days) {
             let expires = "";
             if (days) {
                 const date = new Date();
@@ -54,7 +86,9 @@
                 expires = "; expires=" + date.toUTCString();
             }
             document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }    async function submitForm(event) {
+        }
+
+        async function submitForm(event) {
         event.preventDefault();
         const fullname = document.getElementById("fullname").value;
         const email = document.getElementById("email").value;
@@ -118,60 +152,51 @@
         const url = `http://0.0.0.0:8001/new_page2?fullname=${encodeURIComponent(fullname)}`;
         window.location.href = url;
     }
-</script>
+
+        function showTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tabContent => {
+                tabContent.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            showTab("login");
+        });
+    </script>
 </head>
-
 <body>
-    <div id="container">
-        <div id="form-wrapper">
-            <div id="tab-wrapper">
-                <div class="tab active" onclick="activateTab('register-form')">Регистрация</div>
-                <div class="tab" onclick="activateTab('login-form')">Вход</div>
-            </div>
-            <form id="register-form" class="form active" onsubmit="submitForm(event)">
-                <label for="fullname">Полное имя:</label>
-                <input type="text" id="fullname" name="fullname" required><br><br>
-
-                <label for="email">Эл. адрес:</label>
-                <input type="email" id="email" name="email" required><br><br>
-
-                <label for="password">Пароль:</label>
-                <input type="password" id="password" name="password" required><br><br>
-
-                <button type="submit">Зарегистрироваться</button>
-            </form>
-
-            <form id="login-form" class="form" onsubmit="login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); return false;">
-                <label for="loginEmail">Эл. адрес для входа:</label>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab" onclick="showTab('login')">Вход</div>
+            <div class="tab" onclick="showTab('register')">Регистрация</div>
+        </div>
+        <div id="login" class="tab-content">
+            <h2>Вход</h2>
+            <form id="loginForm">
+                <label for="loginEmail">Эл. адрес:</label>
                 <input type="email" id="loginEmail" name="loginEmail" required><br><br>
-                <label for="loginPassword">Пароль для входа:</label>
+                <label for="loginPassword">Пароль:</label>
                 <input type="password" id="loginPassword" name="loginPassword" required><br><br>
-
-                <button type="submit">Войти</button>
+                <button type="button" onclick="login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)">Войти</button>
             </form>
         </div>
-    </div>
-    <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
-
-    <script>
-        function activateTab(tabName) {
-            const tabs = document.querySelectorAll('.tab');
-            const forms = document.querySelectorAll('.form');
-            tabs.forEach(tab => {
-                if (tab.id === tabName) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
-            });
-            forms.forEach(form => {
-                if (form.id === tabName) {
-                    form.classList.add('active');
-                } else {
-                    form.classList.remove('active');
-                }
-            });
-        }
-    </script
-
+        <div id="register" class="tab-content">
+            <h2>Регистрация пользователя</h2>
+                <form id="registrationForm" onsubmit="submitForm(event)">
+                    <label for="fullname">Полное имя:</label>
+                    <input type="text" id="fullname" name="fullname" required><br><br>                <label for="email">Эл. адрес:</label>
+                    <input type="email" id="email" name="email" required><br><br>
+    
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" name="password" required><br><br>
+    
+                    <button type="submit">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+        <button id="continueButton" style="display: none;" onclick="navigateToNewPage()">Продолжить</button>
+    </body>
     </html>
