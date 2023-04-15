@@ -200,3 +200,12 @@ async def get_policy(
     return templates.TemplateResponse("policy.html")
 
 
+@app.get("/policy2", response_class=HTMLResponse)
+async def get_policy(
+    # request: Request,
+    # fullname: str = Query("Anonim"),
+    # current_user: Optional[UserSchema] = Depends(get_current_user_cook),
+):
+    return {"user_id": "the current user"}
+
+
