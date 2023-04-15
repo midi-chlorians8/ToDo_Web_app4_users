@@ -190,22 +190,6 @@ async def user_login(user: UserLoginSchema = Body(...)):
 
 
 
-
-@app.get("/policy", response_class=HTMLResponse)
-async def get_policy(
-    # request: Request,
-    # fullname: str = Query("Anonim"),
-    # current_user: Optional[UserSchema] = Depends(get_current_user_cook),
-):
-    return templates.TemplateResponse("policy.html")
-
-
-@app.get("/policy2", response_class=HTMLResponse)
-async def get_policy(
-    # request: Request,
-    # fullname: str = Query("Anonim"),
-    # current_user: Optional[UserSchema] = Depends(get_current_user_cook),
-):
-    return {"user_id": "the current user"}
-
-
+@app.get("/policy", response_class=HTMLResponse,tags=["other"])
+async def matrix_login(request: Request):
+    return templates.TemplateResponse("policy.html", {"request": request})
