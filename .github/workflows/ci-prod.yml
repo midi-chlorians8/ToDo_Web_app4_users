@@ -65,46 +65,22 @@ jobs:
           script : |
             # cd /home/ubuntu/
 
-            # if [ ! -d "${{ env.APP_DIR }}" ]; then
-            #     git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
-            # fi    
-
-            # cd /home/ubuntu/${{ env.APP_DIR }}/
-            # set -eux
-            # if ! git diff-index --quiet HEAD --; then
-            #     git stash
-            #     git pull
-            #     git stash apply
-            # else
-            #     git pull
-            # fi
-            # perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
-
-            # aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
-            # docker-compose up -d web
-
-
-            cd /home/ubuntu/
-
-            if [ ! -d "ToDo_Web_app4_users" ]; then
-                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git
-            fi    
+            if [ ! -d "ToDo_Web_app4_users" ]; then 
+                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git 
+            fi
 
             cd /home/ubuntu/ToDo_Web_app4_users/
-            set -eux
-            if ! git diff-index --quiet HEAD --; then
-                CHANGES_PRESENT="true"
-            else
-                CHANGES_PRESENT="false"
-            fi
-            if [ "$CHANGES_PRESENT" = "true" ]; then
-                git stash
-                git pull
-                git stash apply
-            else
-                git pull
-            fi
-            perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:6cdf9ed/ if /^    image:/ }' docker-compose.yaml
+            git diff-index --quiet HEAD -- || CHANGES_PRESENT="true" || CHANGES_PRESENT="false"
 
-            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+            if [ "$CHANGES_PRESENT" = "true" ]; then 
+                git stash 
+                git pull 
+                git stash apply 
+            else 
+                git pull 
+            fi 
+
+            perl -i -pe 'if (/^ web:/../^[^ ]/) { s/(image:.*):.*/$1:6cdf9ed/ if /^ image:/ }' docker-compose.yaml 
+
+            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }} 
             docker-compose up -d web
