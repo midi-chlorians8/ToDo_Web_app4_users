@@ -92,8 +92,12 @@ jobs:
 
             cd /home/ubuntu/ToDo_Web_app4_users/
             set -eux
-            git diff-index --quiet HEAD -- || GIT_DIFF_EXIT_CODE=$? || true
-            if [ "$GIT_DIFF_EXIT_CODE" = "1" ]; then
+            if ! git diff-index --quiet HEAD --; then
+                CHANGES_PRESENT="true"
+            else
+                CHANGES_PRESENT="false"
+            fi
+            if [ "$CHANGES_PRESENT" = "true" ]; then
                 git stash
                 git pull
                 git stash apply
