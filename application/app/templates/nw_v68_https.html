@@ -89,7 +89,7 @@
             document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
         const apiUrl = "https://todo.kolotech.space";
-        
+
         async function submitForm(event) {
         event.preventDefault();
         const fullname = document.getElementById("fullname").value;
@@ -160,7 +160,7 @@
 
     function navigateToNewPage() {
         const fullname = localStorage.getItem("fullname");
-        const url = `https://todo.kolotech.space/new_page2?fullname=${encodeURIComponent(fullname)}`;
+        const url = `${apiUrl}/new_page2?fullname=${encodeURIComponent(fullname)}`;
         window.location.href = url;
     }
 
