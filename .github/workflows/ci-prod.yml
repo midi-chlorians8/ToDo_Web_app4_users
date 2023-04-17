@@ -76,8 +76,8 @@ jobs:
                 git stash 
                 git pull 
                 git stash apply 
-            else 
-                git pull 
+            # else 
+            #     git pull 
             fi 
 
             perl -i -pe 'if (/^ web:/../^[^ ]/) { s/(image:.*):.*/$1:6cdf9ed/ if /^ image:/ }' docker-compose.yaml 
