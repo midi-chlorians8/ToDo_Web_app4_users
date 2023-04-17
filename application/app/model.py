@@ -1,11 +1,11 @@
+from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
-
 
 class PostSchema(BaseModel):
     id: int = Field(default=None)
     title: str = Field(...)
     content: str = Field(...)
-    owner_id: str = Field(...) #Field(...) - обязательное поле для заполнения.
+    owner_id: str = Field(...)
 
     class Config:
         schema_extra = {
@@ -16,11 +16,11 @@ class PostSchema(BaseModel):
             }
         }
 
-
 class UserSchema(BaseModel):
     fullname: str = Field(...)
     email: EmailStr = Field(...)
     password: str = Field(...)
+    #reset_token: Optional[str] = None
 
     class Config:
         schema_extra = {
