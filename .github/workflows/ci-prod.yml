@@ -70,6 +70,7 @@ jobs:
             fi    
 
             cd /home/ubuntu/${{ env.APP_DIR }}/
+            set -eux
             if ! git diff-index --quiet HEAD --; then
                 git stash
                 git pull
