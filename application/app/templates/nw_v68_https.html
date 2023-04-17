@@ -94,8 +94,11 @@
         const fullname = document.getElementById("fullname").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        
+        const apiUrl = "https://todo.kolotech.space";
 
-        const response = await fetch("https://todo.kolotech.space/user/register", {
+
+        const response = await fetch("${apiUrl}/user/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
