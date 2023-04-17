@@ -75,7 +75,9 @@ jobs:
             if [ "$CHANGES_PRESENT" = "true" ]; then 
                 git stash 
                 git pull 
-                git stash apply 
+                if git stash list | grep -q "stash@{0}"; then
+                    git stash apply 
+                fi
             # else 
             #     git pull 
             fi 
