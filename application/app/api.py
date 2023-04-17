@@ -61,7 +61,7 @@ from fastapi.staticfiles import StaticFiles
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v68_https.html", {"request": request})
+    return templates.TemplateResponse("log_reg_page.html", {"request": request})
 # last ok send name
 
 
@@ -105,7 +105,7 @@ async def new_page(
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("test_body18m_https_adapt7cor.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("notes_body2.html", {"request": request, "fullname": fullname})
 
 
 
