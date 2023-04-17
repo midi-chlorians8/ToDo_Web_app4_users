@@ -70,7 +70,9 @@ jobs:
             fi    
 
             cd /home/ubuntu/${{ env.APP_DIR }}/
+            git stash #Этот скрипт сохраняет текущие изменения с помощью git stash, затем выполняет git pull и применяет сохраненные изменения снова с помощью git stash apply.
             git pull
+            git stash apply
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
 
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
