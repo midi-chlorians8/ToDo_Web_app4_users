@@ -195,68 +195,14 @@ async def matrix_login(request: Request):
     return templates.TemplateResponse("policy.html", {"request": request})
 
 
-# # ============= email password recovery =============
-# from aiosmtplib import send
-# from email.message import EmailMessage
-# import secrets
 
-# SMTP_HOST = "smtp.gmail.com"
-# SMTP_PORT = 587
-# SMTP_USERNAME = "ilyadevops2@gmail.com"
-# SMTP_PASSWORD = "Kongo321"
+# ============= email password recovery =============
+from aiosmtplib import send
+from email.message import EmailMessage
+import secrets
 
-# @app.post("/password-reset", tags=["user"])
-# async def request_password_reset(email: str, BackgroundTasks: BackgroundTasks, db: Session = Depends(get_db)):
-#     # Проверьте существование пользователя
-#     user = None
-#     for existing_user in users:
-#         if existing_user.email == email:
-#             user = existing_user
-#             break
+SMTP_HOST = "smtp.gmail.com"
+SMTP_PORT = 587
+SMTP_USERNAME = "your_email"
+SMTP_PASSWORD = "your_email_password"
 
-#     if user is None:
-#         raise HTTPException(status_code=404, detail="User not found")
-
-#     # Создайте токен сброса пароля и сохраните его в базе данных (здесь используется список для демонстрации)
-#     reset_token = secrets.token_hex(20)
-#     user.reset_token = reset_token
-
-#     # Отправьте письмо с инструкциями для сброса пароля
-#     message = EmailMessage()
-#     message["From"] = SMTP_USERNAME
-#     message["To"] = email
-#     message["Subject"] = "Password Reset Request"
-#     reset_url = f"http://localhost:8000/password-reset/{reset_token}"
-#     message.set_content(f"Please follow the link to reset your password: {reset_url}")
-
-#     #await send(message, hostname=SMTP_HOST, port=SMTP_PORT, username=SMTP_USERNAME, password=SMTP_PASSWORD, use_tls=True)
-#     await send(
-#         message,
-#         hostname=SMTP_HOST,
-#         port=465,  # Измените порт на 465
-#         username=SMTP_USERNAME,
-#         password=SMTP_PASSWORD,
-#         use_ssl=True,  # Измените use_tls на use_ssl
-#     )
-#     return {"detail": "Password reset email sent"}
-
-
-
-
-# @app.post("/password-reset/{token}", tags=["user"])
-# async def reset_password(token: str, new_password: str):
-#     # Проверьте токен сброса пароля
-#     user_to_reset = None
-#     for user in users:
-#         if hasattr(user, "reset_token") and user.reset_token == token:
-#             user_to_reset = user
-#             break
-
-#     if user_to_reset is None:
-#         raise HTTPException(status_code=404, detail="Invalid or expired reset token")
-
-#     # Сбросьте пароль пользователя и удалите токен сброса пароля
-#     user_to_reset.password = new_password
-#     del user_to_reset.reset_token
-
-#     return {"detail": "Password reset successful"}
