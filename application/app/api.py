@@ -195,6 +195,7 @@ async def matrix_login(request: Request):
     return templates.TemplateResponse("policy.html", {"request": request})
 
 
+
 # ============= email password recovery =============
 from aiosmtplib import send
 from email.message import EmailMessage
@@ -204,3 +205,4 @@ SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 587
 SMTP_USERNAME = "your_email"
 SMTP_PASSWORD = "your_email_password"
+
