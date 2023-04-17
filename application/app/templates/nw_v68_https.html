@@ -88,14 +88,15 @@
             }
             document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
-
+        const apiUrl = "https://todo.kolotech.space";
+        
         async function submitForm(event) {
         event.preventDefault();
         const fullname = document.getElementById("fullname").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         
-        const apiUrl = "https://todo.kolotech.space";
+        
 
 
         const response = await fetch(`${apiUrl}/user/register`, {
