@@ -99,7 +99,7 @@ async def get_current_user_cook(token: Optional[str] = Cookie(None)) -> dict:
 
 from typing import Optional
 
-@app.get("/new_page2", response_class=HTMLResponse)
+@app.get("/new_page2", response_class=HTMLResponse, tags=["notes_page"])
 async def new_page(
     request: Request,
     fullname: str = Query("Anonim"),
@@ -191,7 +191,7 @@ async def user_login(user: UserLoginSchema = Body(...)):
 
 
 @app.get("/policy", response_class=HTMLResponse,tags=["other"])
-async def matrix_login(request: Request):
+async def show_policy(request: Request):
     return templates.TemplateResponse("policy.html", {"request": request})
 
 
