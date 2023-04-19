@@ -2,21 +2,18 @@
 
 Our service allows users to create and manage notes with ease. You can easily register and login to start creating notes. With our service, you can create new notes or delete old ones with just a few clicks.
 
-## Tech Stack
-
+Tech Stack
 This project uses the following technologies:
-
-### Necessary:
+Nessesary:
 - Python 3.10 - The programming language used for the backend.
 - FastAPI 0.89.1 - The web framework used for the backend.
 - HTML, CSS, and JavaScript - The front-end languages used to create the user interface.
 
-### Not necessary:
+Not nessesary:
 - [Terraform](https://www.terraform.io/) - Terraform v1.4.4 Cloud enables infrastructure automation for provisioning!
 - [AWS cloud](https://aws.amazon.com/what-is-aws/) - I use ec2 instance, elastic ip, ECR in AWS cloud 
 - [GitHub Actions](https://github.com/features/actions)- GitHub Actions is a CI/CD platform that allows you to automate your software development workflows right in your repository. 
-
-## Running the project locally
+## Want to use this project local?
 
 1. Fork/Clone
 
@@ -46,7 +43,7 @@ This project uses the following technologies:
 
 1. Test at [http://localhost:8081/docs](http://localhost:8081/docs)
 
-### To start the program in the background, use this command:
+To start the program in the background, use this command:
 ```sh
 nohup python main.py &
 ```
@@ -58,7 +55,7 @@ ps aux | grep main.py
 ```sh
 kill <PID>
 ```
-## Deploying the project to AWS
+## Want to deploy this project AWS?
 Login to AWS cloud (I use linux in local machine):
 
 ```sh
@@ -146,7 +143,7 @@ Start scypt to add ssl serts:
 - INSTANCE_KEY
 - INSTANCE_USER
 
-These variables are used in our GitHub Actions pipeline.
+That vars uses in our github action pipeline
 ![image](https://user-images.githubusercontent.com/50805334/224275693-42f42348-d12f-459b-b8a5-8d67ecbfe11d.png)
 
 
@@ -154,30 +151,29 @@ To delete all:
 we need to do some steps manually
 1) Delete ECR registry: aws ecr delete-repository --repository-name fastapi-backend-repository-dev --force --region eu-central-1
 
-## Helpful Hints
+# Some helpful hints:
 
-- If some port is already busy (tested on Ubuntu): `sudo fuser -k 8000/tcp`
-- To clear all container images: `sudo docker system prune -a --volumes`
-- To stop all running containers: `sudo docker stop $(sudo docker ps -aq)`
-- To remove all containers (this will not delete any data volumes): `sudo docker rm $(sudo docker ps -aq)`
+If some port already busy (test on ubuntu) = sudo fuser -k 8000/tcp
+To clear all container images              = sudo docker system prune -a --volumes
+
+sudo docker stop $(sudo docker ps -aq) to stop all running containers.
+sudo docker rm $(sudo docker ps -aq) to remove all containers. This will not delete any data volumes.
+sudo docker-compose up
+
+Links:
+- https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/
+- https://testdriven.io/blog/fastapi-jwt-auth/
+- https://github.com/testdrivenio/fastapi-jwt
+- Securing FastAPI with JWT Token-based Authentication
+Check out the [post](https://testdriven.io/blog/fastapi-jwt-auth/).
 
 
-## Links
-
-- [FastAPI Users](https://fastapi-users.github.io/fastapi-users/10.4/usage/flow/)
-- [Testdriven.io - FastAPI JWT Auth](https://testdriven.io/blog/fastapi-jwt-auth/)
-- [GitHub - Testdriven.io FastAPI JWT](https://github.com/testdrivenio/fastapi-jwt)
-- [Securing FastAPI with JWT Token-based Authentication](https://testdriven.io/blog/fastapi-jwt-auth/)
-
-
-
-## Setting up HTTPS Certificates
-
-1. Uncomment nginx and certbot in docker-compose.
-2. Switch to root user: `sudo su`
-3. Edit files `init-letsencrypt.sh` and `data/nginx/app.conf`, replacing the server's DNS name with the actual DNS name.
-4. Run the script to set up Let's Encrypt certificates: `./init-letsencrypt.sh`
-5. Uncomment the following lines in the Nginx configuration:
+How to make https certs:
+1) uncomment nginx and certbot in docker-compose
+2) sudo su
+2.5) redact files init-letsencrypt.sh and data/nginx/app.conf
+replace to actual dns name server
+3) ./init-letsencrypt.sh
 
 uncomment:
 upstream fastapi {
@@ -189,4 +185,4 @@ upstream fastapi {
         proxy_set_header X-Real-IP $remote_addr;
     }  
 
-6. Reload Nginx configuration: `docker-compose exec nginx nginx -s reload`
+docker-compose exec nginx nginx -s reload
