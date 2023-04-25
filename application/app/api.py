@@ -201,10 +201,42 @@ from fastapi import BackgroundTasks
 from app.model import PasswordResetSchema, PasswordUpdateSchema
 from datetime import timedelta
 
+import smtplib
+from email.message import EmailMessage
+
 async def send_password_reset_email(email: str, token: str):
-    # Здесь добавь функционал отправки письма со ссылкой для сброса пароля
-    # Например, можно использовать библиотеки smtplib или FastAPI-Email-Manager
-    pass
+    email_address = "ilyadevops2@gmail.com"  # ваш адрес электронной почты
+    email_password = "bzvlybmzvlqgdipv"  # пароль вашего аккаунта
+
+    # создание письма
+    msg = EmailMessage()
+    msg["Subject"] = "Password reset"
+    msg["From"] = email_address
+    msg["To"] = email
+
+    # здесь необходимо добавить ссылку на ваш сайт, где будет размещена страница сброса пароля
+    reset_link = f"https://todo.kolotech.space/password-reset-page?token={token}"
+
+    msg.set_content(
+        f"""
+        Hi,
+
+        We received a request to reset your password. Please follow the link below to reset your password:
+
+        {reset_link}
+
+        If you did not request a password reset, please ignore this email.
+
+        Best regards,
+        Your App Name
+        """
+    )
+
+    # отправка письма
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(email_address, email_password)
+        smtp.send_message(msg)
+
 
 @app.post("/password-reset-request", tags=["password-reset"])
 async def password_reset_request(password_reset: PasswordResetSchema, background_tasks: BackgroundTasks):
