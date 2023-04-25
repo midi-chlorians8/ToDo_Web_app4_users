@@ -42,3 +42,26 @@ class UserLoginSchema(BaseModel):
                 "password": "weakpassword"
             }
         }
+
+#add email pass recovery
+class PasswordResetSchema(BaseModel):
+    email: EmailStr = Field(...)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "email": "user@example.com"
+            }
+        }
+
+class PasswordUpdateSchema(BaseModel):
+    token: str = Field(...)
+    new_password: str = Field(...)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "token": "your_token_here",
+                "new_password": "new_password"
+            }
+        }

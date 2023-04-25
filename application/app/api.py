@@ -196,13 +196,44 @@ async def show_policy(request: Request):
 
 
 
-# ============= email password recovery =============
-from aiosmtplib import send
-from email.message import EmailMessage
-import secrets
+#add email pass recovery
+from fastapi import BackgroundTasks
+from app.model import PasswordResetSchema, PasswordUpdateSchema
+from datetime import timedelta
 
-SMTP_HOST = "smtp.gmail.com"
-SMTP_PORT = 587
-SMTP_USERNAME = "your_email"
-SMTP_PASSWORD = "your_email_password"
+async def send_password_reset_email(email: str, token: str):
+    # Здесь добавь функционал отправки письма со ссылкой для сброса пароля
+    # Например, можно использовать библиотеки smtplib или FastAPI-Email-Manager
+    pass
+
+@app.post("/password-reset-request", tags=["password-reset"])
+async def password_reset_request(password_reset: PasswordResetSchema, background_tasks: BackgroundTasks):
+    user = None
+    for existing_user in users:
+        if existing_user.email == password_reset.email:
+            user = existing_user
+            break
+    
+    if user:
+        token = signJWT(user.email, expires_delta=timedelta(hours=1))
+        background_tasks.add_task(send_password_reset_email, user.email, token)
+        return {"message": "Password reset link has been sent to your email."}
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+@app.post("/password-reset", tags=["password-reset"])
+async def password_reset(password_update: PasswordUpdateSchema):
+    token = password_update.token
+    payload = decodeJWT(token)
+
+    if payload:
+        email = payload["sub"]
+        new_password = password_update.new_password
+        for user in users:
+            if user.email == email:
+                user.password = new_password
+                return {"message": "Password has been updated successfully."}
+        raise HTTPException(status_code=404, detail="User not found")
+    else:
+        raise HTTPException(status_code=401, detail="Invalid token or token has expired")
 
