@@ -79,10 +79,7 @@
     </style>
     <script>
 
-        const apiUrl = "https://todo.kolotech.space";
-        // const apiUrl = "http://0.0.0.0:8000";
-        
-        function setCookie(name, value, days) {
+         function setCookie(name, value, days) {
             let expires = "";
             if (days) {
                 const date = new Date();
@@ -91,14 +88,18 @@
             }
             document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
+        const apiUrl = "https://todo.kolotech.space";
 
         async function submitForm(event) {
         event.preventDefault();
         const fullname = document.getElementById("fullname").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        
+        
 
-        const response = await fetch("${apiUrl}/user/register", {
+
+        const response = await fetch(`${apiUrl}/user/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -132,7 +133,7 @@
         }
     async function login(email, password) {
         //logout();
-        const response = await fetch("${apiUrl}/user/login", {
+        const response = await fetch(`${apiUrl}/user/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

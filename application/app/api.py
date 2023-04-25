@@ -60,8 +60,8 @@ from fastapi.staticfiles import StaticFiles
 #app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
-async def matrix_login(request: Request):
-    return templates.TemplateResponse("nw_v68_https.html", {"request": request})
+async def register_login(request: Request):
+    return templates.TemplateResponse("log_reg_page.html", {"request": request})
 # last ok send name
 
 
@@ -99,13 +99,13 @@ async def get_current_user_cook(token: Optional[str] = Cookie(None)) -> dict:
 
 from typing import Optional
 
-@app.get("/new_page2", response_class=HTMLResponse)
-async def new_page(
+@app.get("/new_page2", response_class=HTMLResponse, tags=["notes_page"])
+async def page_notes(
     request: Request,
     fullname: str = Query("Anonim"),
     current_user: Optional[UserSchema] = Depends(get_current_user_cook),
 ):
-    return templates.TemplateResponse("test_body18m_https_adapt7.html", {"request": request, "fullname": fullname})
+    return templates.TemplateResponse("notes_body.html", {"request": request, "fullname": fullname})
 
 
 
@@ -191,18 +191,81 @@ async def user_login(user: UserLoginSchema = Body(...)):
 
 
 @app.get("/policy", response_class=HTMLResponse,tags=["other"])
-async def matrix_login(request: Request):
+async def show_policy(request: Request):
     return templates.TemplateResponse("policy.html", {"request": request})
 
 
 
-# ============= email password recovery =============
-from aiosmtplib import send
-from email.message import EmailMessage
-import secrets
+#add email pass recovery
+from fastapi import BackgroundTasks
+from app.model import PasswordResetSchema, PasswordUpdateSchema
+from datetime import timedelta
 
-SMTP_HOST = "smtp.gmail.com"
-SMTP_PORT = 587
-SMTP_USERNAME = "your_email"
-SMTP_PASSWORD = "your_email_password"
+import smtplib
+from email.message import EmailMessage
+
+async def send_password_reset_email(email: str, token: str):
+    email_address = "ilyadevops2@gmail.com"  # ваш адрес электронной почты
+    email_password = "bzvlybmzvlqgdipv"  # пароль вашего аккаунта
+
+    # создание письма
+    msg = EmailMessage()
+    msg["Subject"] = "Password reset"
+    msg["From"] = email_address
+    msg["To"] = email
+
+    # здесь необходимо добавить ссылку на ваш сайт, где будет размещена страница сброса пароля
+    reset_link = f"https://todo.kolotech.space/password-reset-page?token={token}"
+
+    msg.set_content(
+        f"""
+        Hi,
+
+        We received a request to reset your password. Please follow the link below to reset your password:
+
+        {reset_link}
+
+        If you did not request a password reset, please ignore this email.
+
+        Best regards,
+        Your App Name
+        """
+    )
+
+    # отправка письма
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(email_address, email_password)
+        smtp.send_message(msg)
+
+
+@app.post("/password-reset-request", tags=["password-reset"])
+async def password_reset_request(password_reset: PasswordResetSchema, background_tasks: BackgroundTasks):
+    user = None
+    for existing_user in users:
+        if existing_user.email == password_reset.email:
+            user = existing_user
+            break
+    
+    if user:
+        token = signJWT(user.email, expires_delta=timedelta(hours=1))
+        background_tasks.add_task(send_password_reset_email, user.email, token)
+        return {"message": "Password reset link has been sent to your email."}
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+@app.post("/password-reset", tags=["password-reset"])
+async def password_reset(password_update: PasswordUpdateSchema):
+    token = password_update.token
+    payload = decodeJWT(token)
+
+    if payload:
+        email = payload["sub"]
+        new_password = password_update.new_password
+        for user in users:
+            if user.email == email:
+                user.password = new_password
+                return {"message": "Password has been updated successfully."}
+        raise HTTPException(status_code=404, detail="User not found")
+    else:
+        raise HTTPException(status_code=401, detail="Invalid token or token has expired")
 

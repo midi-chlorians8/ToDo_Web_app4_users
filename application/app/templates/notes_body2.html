@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заметки</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+    html {
+    background-color: black;
+    font-family: "Roboto Mono", "Courier New", monospace;
+    color: #21f80a;
+}
+
+body {
+    margin: 0;
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+#logoutBtn {
+    background-color: #21f80a;
+    border: 1px solid #21f80a;
+    color: black;
+    font-size: 16px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#logoutBtn:hover {
+    background-color: #2bff0b;
+}
+
+#fullname {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+}
+
+.note-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.note-rectangle {
+    border: 1px solid #21f80a;
+    background-color: rgba(33, 248, 10, 0.1);
+    padding: 10px;
+    width: 800px;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+}
+
+.delete-note-button {
+    display: inline-flex;
+    width: 80px;
+    height: 20px;
+    margin-left: 10px;
+    font-size: 108px;
+    text-align: center;
+    line-height: 0;
+    position: relative;
+    border: 1px solid #21f80a;
+    background-color: rgba(33, 248, 10, 0.1);
+    color: #21f80a;
+    cursor: pointer;
+}
+
+.delete-note-button:hover {
+    background-color: rgba(33, 248, 10, 0.3);
+}
+
+#inputContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#textInput {
+    width: 800px;
+    resize: none;
+    overflow: hidden;
+    margin-left: 10px;
+    height: auto;
+    min-height: 50px;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: rgba(33, 248, 10, 0.1);
+    border: 1px solid #21f80a;
+    color: #21f80a;
+}
+
+#submitBtn {
+    width: 80px;
+    height: 80px;
+    margin-left: 10px;
+    font-size: 24px;
+    text-align: center;
+    line-height: 80px;
+    background-color: rgba(33, 248, 10, 0.1);
+    border: 1px solid #21f80a;
+    color: #21f80a;
+    cursor: pointer;
+}
+
+#submitBtn:hover {
+    background-color: rgba(33, 248, 10, 0.3);
+}
+</style>
+
+</head>
+<body>
+    <div id="fullname">Иван Иванович</div>
+    <button id="logoutBtn" onclick="logout()">Выход</button>
+    <div class="centered">
+        <div class="note-container" id="noteContainer">
+            <!-- Existing notes will be displayed here -->
+        </div>
+        <div id="inputContainer">
+            <textarea id="textInput" placeholder="Введите вашу заметку здесь..."></textarea>
+            <button id="submitBtn" onclick="submitNote()">➕</button>
+        </div>
+    </div>
+    <script>
+        function logout() {
+            // Add logout functionality here
+        }
+    
+        function submitNote() {
+            const textInput = document.getElementById('textInput');
+            const note = textInput.value;
+            if (note.trim()) {
+                addNote(note);
+                textInput.value = '';
+            }
+        }
+    
+        function addNote(note) {
+            const noteContainer = document.getElementById('noteContainer');
+            const newNoteContainer = document.createElement('div');
+            newNoteContainer.className = 'note-container';
+    
+            const noteRectangle = document.createElement('div');
+            noteRectangle.className = 'note-rectangle';
+            noteRectangle.innerText = note;
+            newNoteContainer.appendChild(noteRectangle);
+    
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-note-button';
+            deleteButton.innerText = '❌';
+            deleteButton.onclick = function () {
+                noteContainer.removeChild(newNoteContainer);
+            };
+            newNoteContainer.appendChild(deleteButton);
+    
+            noteContainer.appendChild(newNoteContainer);
+        }
+    </script>
+    </body>
+    </html>
