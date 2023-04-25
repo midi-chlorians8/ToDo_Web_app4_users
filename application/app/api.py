@@ -205,8 +205,8 @@ import smtplib
 from email.message import EmailMessage
 
 async def send_password_reset_email(email: str, token: str):
-    email_address = "ilyadevops2@gmail.com"  # ваш адрес электронной почты
-    email_password = "bzvlybmzvlqgdipv"  # пароль вашего аккаунта
+    email_address = "notate.sender@gmail.com"  # ваш адрес электронной почты
+    email_password = "alwraoqkfuzwmfgk"  # пароль вашего аккаунта
 
     # создание письма
     msg = EmailMessage()
