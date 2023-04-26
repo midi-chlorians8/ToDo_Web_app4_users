@@ -16,19 +16,34 @@ def token_response(token: str):
         "access_token": token
     }
 
-def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]:
+def signJWT(user_id: str, user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(hours=24)
-
+    
     payload = {
-        "sub": user_email,  # Замените 'user_id' на 'sub'
+        "user_id": user_id,
+        "sub": user_email,
         "expires": expire.timestamp()
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
     return token_response(token)
+
+# def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]: #work [ass repair]
+#     if expires_delta:
+#         expire = datetime.utcnow() + expires_delta
+#     else:
+#         expire = datetime.utcnow() + timedelta(hours=24)
+
+#     payload = {
+#         "sub": user_email,  # Замените 'user_id' на 'sub'
+#         "expires": expire.timestamp()
+#     }
+#     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+#     return token_response(token)
 
 # def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]:
 #     if expires_delta:
