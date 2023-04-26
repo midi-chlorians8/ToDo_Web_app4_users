@@ -142,7 +142,8 @@ async def get_posts(
 @app.post("/posts", dependencies=[Depends(JWTBearer())], tags=["posts"])
 async def add_post(post: PostSchema, current_user: dict = Depends(get_current_user) ) -> dict:
     post.id = len(posts) + 1
-    post.owner_id = current_user["user_id"]
+    # post.owner_id = current_user["user_id"]
+    post.owner_id = current_user["sub"]
     posts.append(post.dict())
     return {
         "data": "post added."
@@ -177,7 +178,7 @@ async def user_register(user: UserSchema = Body(...)):
             raise HTTPException(status_code=400, detail="User already exists")
 
     users.append(user)  # Add user to the users list
-    return {"email": user.email, "token": signJWT( user.id, user.email)}  # Return the email and token of the registered user
+    return {"email": user.email, "token": signJWT(user.email)}  # Return the email and token of the registered user
 
 
 
