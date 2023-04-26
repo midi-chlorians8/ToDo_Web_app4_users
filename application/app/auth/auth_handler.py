@@ -23,12 +23,26 @@ def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[
         expire = datetime.utcnow() + timedelta(hours=24)
 
     payload = {
-        "user_id": user_email,  # Замените 'user_id' на 'user_email'
+        "sub": user_email,  # Замените 'user_id' на 'sub'
         "expires": expire.timestamp()
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
     return token_response(token)
+
+# def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]:
+#     if expires_delta:
+#         expire = datetime.utcnow() + expires_delta
+#     else:
+#         expire = datetime.utcnow() + timedelta(hours=24)
+
+#     payload = {
+#         "user_id": user_email,  # Замените 'user_id' на 'user_email'
+#         "expires": expire.timestamp()
+#     }
+#     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+#     return token_response(token)
 # def signJWT(user_id: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]:
 #     if expires_delta:
 #         expire = datetime.utcnow() + expires_delta
