@@ -116,7 +116,8 @@ async def get_posts() -> dict:
 
 @app.get("/sec_posts", tags=["posts"]) #Покажет все записи залогиненного юзера
 async def get_posts(current_user: dict = Depends(get_current_user)) -> dict:
-    user_id = current_user["user_id"]
+    # user_id = current_user["user_id"]
+    user_id = current_user["sub"]
     user_posts = [post for post in posts if post.get("owner_id") == user_id]
     return {"data": user_posts}
 
@@ -126,7 +127,8 @@ async def get_posts(
     start: int = Query(0),
     end: int = Query(10, ge=0)
 ) -> dict:
-    user_id = current_user["user_id"]
+    # user_id = current_user["user_id"]
+    user_id = current_user["sub"]
     user_posts = [post for post in posts if post.get("owner_id") == user_id]
 
     if start < 0:
