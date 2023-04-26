@@ -177,7 +177,7 @@ async def user_register(user: UserSchema = Body(...)):
             raise HTTPException(status_code=400, detail="User already exists")
 
     users.append(user)  # Add user to the users list
-    return {"email": user.email, "token": signJWT(user.email)}  # Return the email and token of the registered user
+    return {"email": user.email, "token": signJWT( user.id, user.email)}  # Return the email and token of the registered user
 
 
 
