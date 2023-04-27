@@ -22,8 +22,34 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import Column, Integer, String
 class Base(DeclarativeBase):
     pass
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String)
+    full_name = Column(String)
+
+Base.metadata.create_all(bind=engine) #create the users table in your database
+
+from sqlalchemy.orm import Session
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+
+
+
+
 
 
 
