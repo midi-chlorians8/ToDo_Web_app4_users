@@ -4,6 +4,28 @@ from app.model import PostSchema, UserSchema, UserLoginSchema
 from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import signJWT, decodeJWT
 
+# DataBase
+from dotenv import load_dotenv
+load_dotenv()
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+SQLALCHEMY_DATABASE_URL = os.getenv('SQLALCHEMY_DATABASE_URL') 
+print(type(os.getenv('SQLALCHEMY_DATABASE_URL')))
+print(type("postgresql://user:password@postgresserver/db"))
+print(os.getenv('SQLALCHEMY_DATABASE_URL'))
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+from sqlalchemy.orm import DeclarativeBase
+class Base(DeclarativeBase):
+    pass
+
+
 
 posts = [
     {
@@ -286,18 +308,3 @@ async def password_reset(password_update: PasswordUpdateSchema):
 
 
  
-# DataBase
-from dotenv import load_dotenv
-load_dotenv()
-
-
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
-SQLALCHEMY_DATABASE_URL = os.getenv('SQLALCHEMY_DATABASE_URL') #"postgresql://postgres:postgres@localhost/postgres" #os.getenv('SQLALCHEMY_DATABASE_URI') #"postgresql://postgres:postgres@localhost/postgres"
-print(type(os.getenv('SQLALCHEMY_DATABASE_URL')))
-print(type("postgresql://user:password@postgresserver/db"))
-print(os.getenv('SQLALCHEMY_DATABASE_URL'))

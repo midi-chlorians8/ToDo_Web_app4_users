@@ -4,10 +4,10 @@
 THRESHOLD=80
 
 # Set the target partition (e.g., /dev/sda1)
-PARTITION="/dev/sda1"
+PARTITION="/dev/root"
 
 # Get the current disk usage percentage
-CURRENT_USAGE=$(df -h | grep "$PARTITION" | awk '{ print $5 }' | sed 's/%//')
+CURRENT_USAGE=$(df --output=pcent "$PARTITION" | sed -n 2p | tr -dc '0-9')
 
 # Check if the current usage is greater than the threshold
 if [ "$CURRENT_USAGE" -gt "$THRESHOLD" ]; then
