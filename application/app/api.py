@@ -5,6 +5,7 @@ from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import signJWT, decodeJWT
 
 # DataBase
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
