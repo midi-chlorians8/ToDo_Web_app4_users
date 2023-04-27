@@ -4,6 +4,28 @@ from app.model import PostSchema, UserSchema, UserLoginSchema
 from app.auth.auth_bearer import JWTBearer
 from app.auth.auth_handler import signJWT, decodeJWT
 
+# DataBase
+from dotenv import load_dotenv
+load_dotenv()
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+SQLALCHEMY_DATABASE_URL = os.getenv('SQLALCHEMY_DATABASE_URL') 
+print(type(os.getenv('SQLALCHEMY_DATABASE_URL')))
+print(type("postgresql://user:password@postgresserver/db"))
+print(os.getenv('SQLALCHEMY_DATABASE_URL'))
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+from sqlalchemy.orm import DeclarativeBase
+class Base(DeclarativeBase):
+    pass
+
+
 
 posts = [
     {
@@ -56,8 +78,9 @@ import os
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles
 #app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def register_login(request: Request):
@@ -116,7 +139,8 @@ async def get_posts() -> dict:
 
 @app.get("/sec_posts", tags=["posts"]) #Покажет все записи залогиненного юзера
 async def get_posts(current_user: dict = Depends(get_current_user)) -> dict:
-    user_id = current_user["user_id"]
+    # user_id = current_user["user_id"]
+    user_id = current_user["sub"]
     user_posts = [post for post in posts if post.get("owner_id") == user_id]
     return {"data": user_posts}
 
@@ -126,7 +150,8 @@ async def get_posts(
     start: int = Query(0),
     end: int = Query(10, ge=0)
 ) -> dict:
-    user_id = current_user["user_id"]
+    # user_id = current_user["user_id"]
+    user_id = current_user["sub"]
     user_posts = [post for post in posts if post.get("owner_id") == user_id]
 
     if start < 0:
@@ -142,7 +167,8 @@ async def get_posts(
 @app.post("/posts", dependencies=[Depends(JWTBearer())], tags=["posts"])
 async def add_post(post: PostSchema, current_user: dict = Depends(get_current_user) ) -> dict:
     post.id = len(posts) + 1
-    post.owner_id = current_user["user_id"]
+    # post.owner_id = current_user["user_id"]
+    post.owner_id = current_user["sub"]
     posts.append(post.dict())
     return {
         "data": "post added."
@@ -205,8 +231,8 @@ import smtplib
 from email.message import EmailMessage
 
 async def send_password_reset_email(email: str, token: str):
-    email_address = "ilyadevops2@gmail.com"  # ваш адрес электронной почты
-    email_password = "bzvlybmzvlqgdipv"  # пароль вашего аккаунта
+    email_address = "notate.sender@gmail.com"  # ваш адрес электронной почты
+    email_password = "alwraoqkfuzwmfgk"  # пароль вашего аккаунта
 
     # создание письма
     msg = EmailMessage()
@@ -269,3 +295,16 @@ async def password_reset(password_update: PasswordUpdateSchema):
     else:
         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
 
+
+
+
+
+
+
+
+
+
+
+
+
+ 
