@@ -56,8 +56,9 @@ import os
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 templates = Jinja2Templates(directory=templates_dir)
 
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles
 #app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 
 @app.get("/", response_class=HTMLResponse,tags=["root"])
 async def register_login(request: Request):
@@ -272,3 +273,31 @@ async def password_reset(password_update: PasswordUpdateSchema):
     else:
         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
 
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+# DataBase
+from dotenv import load_dotenv
+load_dotenv()
+
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+SQLALCHEMY_DATABASE_URL = os.getenv('SQLALCHEMY_DATABASE_URL') #"postgresql://postgres:postgres@localhost/postgres" #os.getenv('SQLALCHEMY_DATABASE_URI') #"postgresql://postgres:postgres@localhost/postgres"
+print(type(os.getenv('SQLALCHEMY_DATABASE_URL')))
+print(type("postgresql://user:password@postgresserver/db"))
+print(os.getenv('SQLALCHEMY_DATABASE_URL'))
