@@ -219,7 +219,7 @@ async def user_login(user: UserLoginSchema = Body(...)):
 
 @app.get("/policy", response_class=HTMLResponse,tags=["other"])
 async def show_policy(request: Request):
-    return templates.TemplateResponse("policy.html", {"request": request})
+    return templates.TemplateResponse("policy2.html", {"request": request})
 
 
 
