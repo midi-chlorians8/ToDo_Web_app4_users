@@ -16,20 +16,7 @@ class PostSchema(BaseModel):
             }
         }
 
-class UserSchema(BaseModel):
-    fullname: str = Field(...)
-    email: EmailStr = Field(...)
-    password: str = Field(...)
-    #reset_token: Optional[str] = None
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "fullname": "Abdulazeez Abdulazeez Adeshina",
-                "email": "abdulazeez@x.com",
-                "password": "weakpassword"
-            }
-        }
 
 class UserLoginSchema(BaseModel):
     email: EmailStr = Field(...)

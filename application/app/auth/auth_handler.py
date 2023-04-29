@@ -2,11 +2,14 @@ import time
 from typing import Dict
 
 import jwt
-from decouple import config
+from app.setting import CONFIG
+from time import time
+from app.shemas.user import TokenPayload
 
 
-JWT_SECRET = config("secret")
-JWT_ALGORITHM = config("algorithm")
+JWT_SECRET = CONFIG.SECRET
+JWT_ALGORITHM = CONFIG.ALGORITHM
+JWT_RESET_SECRET_KEY = CONFIG.JWT_RESET_SECRET_KEY
 
 from typing import Optional
 from datetime import timedelta, datetime
@@ -44,6 +47,18 @@ def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
     return token_response(token)
+
+
+def get_reset_password_token(email: str, expires_in: int) -> str:
+    return jwt.encode(
+        {'sub': email, 'exp': time() + expires_in},
+        JWT_RESET_SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+async def get_user_email_from_reset_token(token: str):
+    payload = jwt.decode(token, JWT_RESET_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    token_data = TokenPayload(**payload)
+    return token_data.sub
 
 # def signJWT(user_email: str, expires_delta: Optional[timedelta] = None) -> Dict[str, str]:
 #     if expires_delta:
