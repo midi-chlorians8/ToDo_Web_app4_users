@@ -242,23 +242,38 @@ async def send_password_reset_email(email: str, token: str):
     msg["To"] = email
 
     # здесь необходимо добавить ссылку на ваш сайт, где будет размещена страница сброса пароля
-    reset_link = f"https://todo.kolotech.space/password-reset-page?token={token}"
+    # reset_link = f"https://todo.kolotech.space/password-reset-page?token={token}"
+
+    # msg.set_content(
+    #     f"""
+    #     Hi,
+
+    #     We received a request to reset your password. Please follow the link below to reset your password:
+
+    #     {reset_link}
+
+    #     If you did not request a password reset, please ignore this email.
+
+    #     Best regards,
+    #     Your App Name
+    #     """
+    # )
+    reset_link = f"notate://resetpassword?token={token}"
 
     msg.set_content(
         f"""
         Hi,
 
-        We received a request to reset your password. Please follow the link below to reset your password:
+        We received a request to reset your password. Please open the following link on your mobile device to reset your password:
 
         {reset_link}
 
         If you did not request a password reset, please ignore this email.
 
         Best regards,
-        Your App Name
+        Your Notate
         """
     )
-
     # отправка письма
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(email_address, email_password)
