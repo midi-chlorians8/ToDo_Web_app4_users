@@ -258,22 +258,36 @@ async def send_password_reset_email(email: str, token: str):
     #     Your App Name
     #     """
     # )
-    reset_link = f"notate://resetpassword?token={token}"
+    from urllib.parse import urlunparse
 
-    msg.set_content(
+    # Замените этот код на ваш домен и путь к странице сброса пароля
+    base_url = "notate://resetpassword"
+    reset_path = "resetpassword"
+
+    reset_link = urlunparse(("https", base_url, reset_path, "", f"token={token}", ""))
+
+    msg.set_content("Please, use an email client that supports HTML emails to view the content.")
+    msg.add_alternative(
         f"""
-        Hi,
+        <html>
+            <body>
+                <p>Hi,</p>
 
-        We received a request to reset your password. Please open the following link on your mobile device to reset your password:
+                <p>We received a request to reset your password. Please follow the link below to reset your password:</p>
 
-        {reset_link}
+                <p><a href="{reset_link}">{reset_link}</a></p>
 
-        If you did not request a password reset, please ignore this email.
+                <p>If you did not request a password reset, please ignore this email.</p>
 
-        Best regards,
-        Your Notate
-        """
+                <p>Best regards,</p>
+                <p>Your App Name</p>
+            </body>
+        </html>
+        """, subtype="html"
     )
+
+
+
     # отправка письма
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(email_address, email_password)
