@@ -261,7 +261,7 @@ async def send_password_reset_email(email: str, token: str):
     from urllib.parse import urlunparse
 
     # Замените этот код на ваш домен и путь к странице сброса пароля
-    base_url = "notate://notate.com"
+    base_url = "notate.com"
     reset_path = "resetpassword"
 
     reset_link = urlunparse(("https", base_url, reset_path, "", f"token={token}", ""))
