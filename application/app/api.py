@@ -204,6 +204,16 @@ async def user_register(user: UserSchema = Body(...)):
             raise HTTPException(status_code=400, detail="User already exists")
 
     users.append(user)  # Add user to the users list
+
+    # Create a welcome note for the new user
+    welcome_note = {
+        "id": len(posts) + 1,
+        "title": "Welcome",
+        "content": "Hello world",
+        "owner_id": user.email
+    }
+    posts.append(welcome_note)  # Add the welcome note to the posts list
+
     return {"email": user.email, "token": signJWT(user.email)}  # Return the email and token of the registered user
 
 
@@ -241,23 +251,7 @@ async def send_password_reset_email(email: str, token: str):
     msg["From"] = email_address
     msg["To"] = email
 
-    # здесь необходимо добавить ссылку на ваш сайт, где будет размещена страница сброса пароля
-    # reset_link = f"https://todo.kolotech.space/password-reset-page?token={token}"
 
-    # msg.set_content(
-    #     f"""
-    #     Hi,
-
-    #     We received a request to reset your password. Please follow the link below to reset your password:
-
-    #     {reset_link}
-
-    #     If you did not request a password reset, please ignore this email.
-
-    #     Best regards,
-    #     Your App Name
-    #     """
-    # )
     from urllib.parse import urlunparse
 
     # Замените этот код на ваш домен и путь к странице сброса пароля
