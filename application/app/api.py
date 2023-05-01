@@ -320,6 +320,9 @@ async def password_reset(password_update: PasswordUpdateSchema):
         raise HTTPException(status_code=401, detail="Invalid token or token has expired")
 
 
+@app.get("/healthcheck", tags=["healthcheck"])
+async def healthcheck() -> dict:
+    return {"status": "OK", "message": "Application is running"}
 
 
 
