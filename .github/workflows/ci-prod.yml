@@ -49,9 +49,18 @@ jobs:
 
       # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
       - name: Run linter
-        run: | 
+        run: flake8 . 
           flake8 .
+          # Добавьте этот шаг для статического анализа кода с помощью mypy
+      - name: Run static type checking
+        run: mypy .
+          
+
+      - name: Move back
+        run: |
           cd ..
+
+
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
