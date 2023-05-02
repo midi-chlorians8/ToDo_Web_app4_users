@@ -45,7 +45,7 @@ jobs:
         run: |
           cd application
           pip install -r requirements.txt
-          pip install flake8 pytest
+          pip install flake8 pytest mypy
 
 
 
@@ -56,7 +56,7 @@ jobs:
       # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
       - name: Run linter
         run: flake8 . 
-        
+
       - name: Move back
         run: |
           cd ..
