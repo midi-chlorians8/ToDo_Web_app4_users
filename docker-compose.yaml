@@ -1,8 +1,5 @@
-version: '3'
-
+version: '3.8'
 services:
-
-
   web:
     #build: ./application
     image: 734075410113.dkr.ecr.eu-central-1.amazonaws.com/fastapi-backend-repository-gorilla-prod:e509ff3
