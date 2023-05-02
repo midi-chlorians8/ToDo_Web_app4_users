@@ -6,7 +6,8 @@ class PostSchema(BaseModel):
     title: str = Field(...)
     content: str = Field(...)
     owner_id: str = Field(...)
-    created_at: str = Field(...)
+    # created_at: str = Field(...)
+    created_at: str | None = Field(None, ...)
 
     class Config:
         schema_extra = {
