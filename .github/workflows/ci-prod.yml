@@ -47,14 +47,16 @@ jobs:
           pip install -r requirements.txt
           pip install flake8 pytest
 
-      # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
-      - name: Run linter
-        run: flake8 . 
+
 
       # Добавьте этот шаг для статического анализа кода с помощью mypy
       - name: Run static type checking
         run: mypy .   
 
+      # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
+      - name: Run linter
+        run: flake8 . 
+        
       - name: Move back
         run: |
           cd ..
