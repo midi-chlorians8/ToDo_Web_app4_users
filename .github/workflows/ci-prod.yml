@@ -43,13 +43,15 @@ jobs:
       # Добавьте этот шаг для установки зависимостей перед запуском линтера и тестов
       - name: Install dependencies
         run: |
+          cd application
           pip install -r requirements.txt
           pip install flake8 pytest
 
       # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
       - name: Run linter
-        run: flake8 .
-
+        run: | 
+          flake8 .
+          cd ..
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
