@@ -50,11 +50,10 @@ jobs:
       # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
       - name: Run linter
         run: flake8 . 
-          flake8 .
-          # Добавьте этот шаг для статического анализа кода с помощью mypy
+
+      # Добавьте этот шаг для статического анализа кода с помощью mypy
       - name: Run static type checking
-        run: mypy .
-          
+        run: mypy .   
 
       - name: Move back
         run: |
