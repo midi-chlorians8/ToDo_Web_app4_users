@@ -157,6 +157,9 @@ we need to do some steps manually
 ## Helpful Hints
 
 - If some port is already busy (tested on Ubuntu): `sudo fuser -k 8000/tcp`
+sudo lsof -i:8000
+docker-compose up -d --build
+
 - To clear all container images: `sudo docker system prune -a --volumes`
 - To stop all running containers: `sudo docker stop $(sudo docker ps -aq)`
 - To remove all containers (this will not delete any data volumes): `sudo docker rm $(sudo docker ps -aq)`
