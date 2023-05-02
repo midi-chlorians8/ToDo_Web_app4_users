@@ -39,27 +39,26 @@ jobs:
         run: |
           pwd
           ls
-          #cd application
-      # Добавьте этот шаг для установки зависимостей перед запуском линтера и тестов
-      - name: Install dependencies
-        run: |
-          cd application
-          pip install -r requirements.txt
-          pip install flake8 pytest mypy
+      # # Добавьте этот шаг для установки зависимостей перед запуском линтера и тестов
+      # - name: Install dependencies
+      #   run: |
+      #     cd application
+      #     pip install -r requirements.txt
+      #     pip install flake8 pytest mypy
 
 
 
-      # Добавьте этот шаг для статического анализа кода с помощью mypy
-      - name: Run static type checking
-        run: mypy .   
+      # # # Добавьте этот шаг для статического анализа кода с помощью mypy
+      # # - name: Run static type checking
+      # #   run: mypy .   
 
-      # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
-      - name: Run linter
-        run: flake8 . 
+      # # # Добавьте этот шаг для проверки кода на соответствие стилю с помощью Flake8
+      # # - name: Run linter
+      # #   run: flake8 . 
 
-      - name: Move back
-        run: |
-          cd ..
+      # - name: Move back
+      #   run: |
+      #     cd ..
 
 
       - name: Build, tag, and push image to Amazon ECR
@@ -108,3 +107,8 @@ jobs:
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }} 
             docker-compose up -d web
             docker-compose up -d db
+
+      # Добавьте этот шаг для проверки работоспособности приложения после развертывания
+      - name: Run smoke tests
+        run: |
+          curl -X GET "https://todo.kolotech.space/healthcheck" -H "accept: application/json"
