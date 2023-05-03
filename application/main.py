@@ -1,14 +1,15 @@
 import uvicorn
-from fastapi import Depends, FastAPI, Request, status
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 
 from app.routes.api.user import users_route
-# from app.routes.api.posts import posts_route
+from app.routes.api.posts import posts_route
 
 # from app.routes.web.notes import notes_web_route
-# from app.routes.web.policy import policy_web_route
+from app.routes.web.policy import policy_web_route
+from app.routes.api.helfcheck import health_route
 
 from app.exceptions import NotFoundException, ConflictException, UnauthorizedException, ApiException
 
@@ -73,10 +74,11 @@ def create_app() -> FastAPI:
         )
 
     app.include_router(router=users_route, prefix='/users', tags=["users"])
-    # app.include_router(router=posts_route, prefix='/posts', tags=["posts"])
+    app.include_router(router=posts_route, prefix='/posts', tags=["posts"])
 
     # app.include_router(router=notes_web_route, tags=["notes_web"])
-    # app.include_router(router=policy_web_route, prefix='/other', tags=["other"])
+    app.include_router(router=policy_web_route, prefix='/policy', tags=["other"])
+    app.include_router(router=health_route, prefix='/healthcheck', tags=["healthcheck"])
 
     @app.on_event("startup")
     async def startup():

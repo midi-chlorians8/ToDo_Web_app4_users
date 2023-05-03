@@ -25,13 +25,11 @@ class UserLoginSchema(PasswordResetSchema):
 
 
 class UserSchemaCreate(PasswordResetSchema):
-    fullname: str = Field(...)
     psw: str = Field(...)
 
     class Config:
         schema_extra = {
             "example": {
-                "fullname": "Abdulazeez Abdulazeez Adeshina",
                 "email": "abdulazeez@x.com",
                 "psw": "weakpassword"
             }

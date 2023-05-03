@@ -16,7 +16,6 @@ class UserRepository(BaseRepository):
 
     async def create_user(self, data: UserSchemaCreate) -> str:
         user = UserSchemaCreate(
-            fullname=data.fullname,
             email=data.email,
             psw=hash_password(data.psw)
         )

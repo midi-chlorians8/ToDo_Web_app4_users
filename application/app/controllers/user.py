@@ -31,7 +31,7 @@ class UserAPIController:
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Incorrect password",
             )
-        token = signJWT(data.email)
+        token = signJWT(check_user.id)
         return UserSchemaOut(email=data.email, access_token=token['access_token'])
 
     @classmethod
