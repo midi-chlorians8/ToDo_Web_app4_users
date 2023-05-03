@@ -179,8 +179,8 @@ async def add_post(post: PostSchema, current_user: dict = Depends(get_current_us
 
 @app.delete("/posts/{post_id}", tags=["posts"])
 async def delete_post(post_id: int, current_user: dict = Depends(get_current_user)) -> dict:
-    user_id = current_user["user_id"]
-
+    # user_id = current_user["user_id"]
+    user_id = current_user["sub"]
     post_to_delete = None
     for post in posts:
         if post["id"] == post_id and post["owner_id"] == user_id:
