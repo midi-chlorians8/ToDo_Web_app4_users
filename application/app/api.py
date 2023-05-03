@@ -208,7 +208,7 @@ async def user_register(user: UserSchema = Body(...)):
     # Create a welcome note for the new user
     welcome_note = {
         "id": len(posts) + 1,
-        "title": "Welcome",
+        # "title": "Welcome",
         "content": """ Welcome to our note-taking app! Elon Musk once said, "When there's nothing to lose, there's only winning left." Plan your victories and successes with our application. """,
         "owner_id": user.email
     }
