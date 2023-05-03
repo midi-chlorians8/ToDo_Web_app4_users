@@ -133,10 +133,10 @@ async def page_notes(
 
 
 
-# see posts
-@app.get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
-async def get_posts() -> dict:
-    return { "data": posts }
+# # see posts
+# @app.get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
+# async def get_posts() -> dict:
+#     return { "data": posts }
 
 @app.get("/sec_posts", tags=["posts"]) #Покажет все записи залогиненного юзера
 async def get_posts(current_user: dict = Depends(get_current_user)) -> dict:
