@@ -10,32 +10,6 @@ from app.shemas.posts import PostSchema, PostSchemaCreate
 posts_route = APIRouter()
 
 
-posts = [
-    {
-        "id": 1,
-        "content": "Lorem Ipsum ..."
-        "data"
-        "user_id"},
-     {
-      "id": 2,
-      "title": "SaaT.",
-      "content": "Follow point my project plan",
-      "owner_id": "aa@gmail.com"
-    },
-    {
-      "id": 3,
-      "title": "Saa2T.",
-      "content": "Today I want to to 1,2,3 points",
-      "owner_id": "aa@gmail.com"
-    }
-]
-
-
-@posts_route.get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
-async def get_posts() -> dict:
-    return { "data": posts }
-
-
 @posts_route .get("/sec_posts_query", tags=["posts"], response_model=List[PostSchema])  # Покажет записи в заданном диапазоне залогиненного юзера
 async def get_posts(
         current_user_id: int = Depends(get_current_user_id),
