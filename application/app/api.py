@@ -266,17 +266,15 @@ async def send_password_reset_email(email: str, token: str):
         <html>
             <body>
                 <p>Hi,</p>
-
                 <p>We received a request to reset your password. Please follow the link below to reset your password:</p>
-
                 <p><a href="{reset_link}">{reset_link}</a></p>
-
+                <p><strong>Please note:</strong> To reset your password, make sure to open this link on your Android device.</p>
                 <p>If you did not request a password reset, please ignore this email.</p>
-
                 <p>Best regards,</p>
                 <p>Your App Name</p>
             </body>
         </html>
+
         """, subtype="html"
     )
 
