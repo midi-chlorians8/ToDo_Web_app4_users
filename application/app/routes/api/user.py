@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, BackgroundTasks
 from app.controllers.user import UserAPIController
-from app.shemas.user import UserSchemaCreate, UserSchemaOut, UserLoginSchema, PasswordResetSchema
 from app.core.user import UserRepository
-from application.app.repositories.user import get_user_repository
-
+from app.repositories.user import get_user_repository
+from app.shemas.user import UserSchemaCreate, UserSchemaOut, UserLoginSchema, PasswordResetSchema
 
 users_route = APIRouter()
 

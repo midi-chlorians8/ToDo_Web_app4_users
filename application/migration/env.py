@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, async_engine_from_config
 from sqlmodel import SQLModel
 
 from app.models.user import User
+from app.models.posts import Posts
 
 
 from app.setting import CONFIG

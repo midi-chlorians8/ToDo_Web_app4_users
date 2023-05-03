@@ -40,6 +40,11 @@ class UserSchemaOut(PasswordResetSchema):
     access_token: str
 
 
-class TokenPayload(BaseModel):
+class TokenPayloadReset(BaseModel):
     sub: EmailStr = None
+    exp: int = None
+
+
+class TokenPayload(BaseModel):
+    user_id: int = None
     exp: int = None

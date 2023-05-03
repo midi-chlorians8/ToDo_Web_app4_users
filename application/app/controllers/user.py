@@ -17,9 +17,9 @@ class UserAPIController:
         check_user = await user.get_by_email_or_none(email=data.email)
         if check_user:
             raise ConflictException(name="User already exists")
-        email = await user.create_user(data=data)
-        token = signJWT(email)
-        return UserSchemaOut(email=email, access_token=token['access_token'])
+        new_user = await user.create_user(data=data)
+        token = signJWT(new_user.user_id)
+        return UserSchemaOut(email=new_user.email, access_token=token)
 
     @classmethod
     async def login_user(cls, data: UserLoginSchema, user: UserRepository):
@@ -31,8 +31,8 @@ class UserAPIController:
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Incorrect password",
             )
-        token = signJWT(check_user.id)
-        return UserSchemaOut(email=data.email, access_token=token['access_token'])
+        token = signJWT(check_user.user_id)
+        return UserSchemaOut(email=check_user.email, access_token=token)
 
     @classmethod
     async def password_reset_user(cls, data: PasswordResetSchema,
@@ -42,6 +42,7 @@ class UserAPIController:
         if check_user is None:
             raise NotFoundException(name="User")
         token = get_reset_password_token(email=check_user.email, expires_in=3600)
+        print(token)
         background_tasks.add_task(send_password_reset_email, check_user.email, token)
         return {"message": 'Link was sent to email'}
 

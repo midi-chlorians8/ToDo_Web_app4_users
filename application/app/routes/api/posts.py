@@ -1,8 +1,10 @@
-from fastapi import APIRouter
-from fastapi import Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from typing import List
 from app.auth.auth_handler import get_current_user_id
-from app.shemas.posts import PostSchema
-from app.auth.auth_bearer import JWTBearer
+from app.controllers.posts import PostsAPIController
+from app.core.posts import PostsRepository
+from app.repositories.posts import get_posts_repository
+from app.shemas.posts import PostSchema, PostSchemaCreate
 
 
 posts_route = APIRouter()
@@ -11,9 +13,9 @@ posts_route = APIRouter()
 posts = [
     {
         "id": 1,
-        "title": "Pancake",
         "content": "Lorem Ipsum ..."
-    },
+        "data"
+        "user_id"},
      {
       "id": 2,
       "title": "SaaT.",
@@ -29,54 +31,32 @@ posts = [
 ]
 
 
-@posts_route .get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
+@posts_route.get("/free_posts", tags=["posts"]) #Покажет все записи без логина в систему
 async def get_posts() -> dict:
     return { "data": posts }
 
 
-@posts_route .get("/sec_posts", tags=["posts"]) #Покажет все записи залогиненного юзера
-async def get_posts(current_user_id: int = Depends(get_current_user_id)) -> dict:
-    user_posts = [post for post in posts if post.get("owner_id") == current_user_id]
-    return {"data": user_posts}
-
-
-@posts_route .get("/sec_posts_query", tags=["posts"])  # Покажет записи в заданном диапазоне залогиненного юзера
+@posts_route .get("/sec_posts_query", tags=["posts"], response_model=List[PostSchema])  # Покажет записи в заданном диапазоне залогиненного юзера
 async def get_posts(
         current_user_id: int = Depends(get_current_user_id),
-        start: int = Query(0),
-        end: int = Query(10, ge=0)
-) -> dict:
-    user_posts = [post for post in posts if post.get("owner_id") == current_user_id]
-
-    if start < 0:
-        user_posts = user_posts[start:end]
-    else:
-        user_posts = user_posts[start:end]
-
-    return {"data": user_posts}
+        session: PostsRepository = Depends(get_posts_repository)
+):
+    response = await PostsAPIController.controller_get_all_user_posts(user_id=current_user_id, posts=session)
+    return response
 
 
-@posts_route .post("/posts", dependencies=[Depends(JWTBearer())], tags=["posts"])
-async def add_post(post: PostSchema, current_user_id: int = Depends(get_current_user_id)) -> dict:
-    post.id = len(posts) + 1
-    post.owner_id = current_user_id
-    posts.append(post.dict())
-    return {
-        "data": "post added."
-    }
+@posts_route.post("/posts", tags=["posts"], response_model=PostSchema)
+async def add_post(data: PostSchemaCreate, current_user_id: int = Depends(get_current_user_id),
+                   session: PostsRepository = Depends(get_posts_repository)) -> dict:
+    if current_user_id != data.user_id:
+        raise HTTPException(status_code=422, detail='current user id and body id mismatch')
+    response = await PostsAPIController.controller_create_user_post(data, posts=session)
+    return response
 
 
-@posts_route .delete("/posts/{post_id}", tags=["posts"])
-async def delete_post(post_id: int, current_user_id: int = Depends(get_current_user_id)) -> dict:
-    post_to_delete = None
-    for post in posts:
-        if post["id"] == post_id and post["owner_id"] == current_user_id:
-            post_to_delete = post
-            break
-
-    if post_to_delete is not None:
-        posts.remove(post_to_delete)
-        return {"data": f"Post with ID {post_id} has been deleted."}
-    else:
-        raise HTTPException(status_code=404, detail="Post not found or not owned by the current user.")
-
+@posts_route.delete("/posts/{post_id}", tags=["posts"])
+async def delete_post(post_id: int, current_user_id: int = Depends(get_current_user_id),
+                      session: PostsRepository = Depends(get_posts_repository)):
+    response = await PostsAPIController.controller_delete_user_post(post_id, current_user_id, posts=session)
+    if response:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
