@@ -3,7 +3,7 @@ from app.auth.auth_handler import signJWT, get_reset_password_token, get_user_em
 from app.shemas.user import UserSchemaCreate, UserSchemaOut, UserLoginSchema, PasswordResetSchema
 from app.core.user import UserRepository
 from app.exceptions import ConflictException, NotFoundException, ApiException
-from application.app.auth.security import verify_password
+from app.auth.security import verify_password
 from fastapi import HTTPException
 from starlette import status
 import jwt
