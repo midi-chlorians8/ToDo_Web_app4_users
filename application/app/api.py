@@ -145,23 +145,23 @@ async def get_posts(current_user: dict = Depends(get_current_user)) -> dict:
     user_posts = [post for post in posts if post.get("owner_id") == user_id]
     return {"data": user_posts}
 
-@app.get("/sec_posts_query", tags=["posts"]) #Покажет записи в заданном диапазоне залогиненного юзера
-async def get_posts(
-    current_user: dict = Depends(get_current_user),
-    start: int = Query(0),
-    end: int = Query(10, ge=0)
-) -> dict:
-    # user_id = current_user["user_id"]
-    user_id = current_user["sub"]
-    user_posts = [post for post in posts if post.get("owner_id") == user_id]
+# @app.get("/sec_posts_query", tags=["posts"]) #Покажет записи в заданном диапазоне залогиненного юзера
+# async def get_posts(
+#     current_user: dict = Depends(get_current_user),
+#     start: int = Query(0),
+#     end: int = Query(10, ge=0)
+# ) -> dict:
+#     # user_id = current_user["user_id"]
+#     user_id = current_user["sub"]
+#     user_posts = [post for post in posts if post.get("owner_id") == user_id]
 
-    if start < 0:
-        user_posts = user_posts[start:end]
-    else:
-        user_posts = user_posts[start:end]
+#     if start < 0:
+#         user_posts = user_posts[start:end]
+#     else:
+#         user_posts = user_posts[start:end]
     
-    return {"data": user_posts}
-# see posts
+#     return {"data": user_posts}
+# # see posts
 
 
 
