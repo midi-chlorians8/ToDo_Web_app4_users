@@ -108,6 +108,10 @@ jobs:
             docker-compose up -d web
             docker-compose up -d db
 
+      - name: Clear old images on the server
+        run: |
+          docker images --no-trunc -aqf "dangling=true" | xargs docker rmi
+
       # Добавьте этот шаг для проверки работоспособности приложения после развертывания
       - name: Run smoke tests
         run: |
