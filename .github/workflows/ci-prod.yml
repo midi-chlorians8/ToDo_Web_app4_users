@@ -117,3 +117,4 @@ jobs:
         run: |
           sleep 5
           curl -f -X GET "https://todo.kolotech.space/healthcheck" -H "accept: application/json"
+
