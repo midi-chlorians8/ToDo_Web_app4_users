@@ -1,10 +1,11 @@
 import smtplib
 from email.message import EmailMessage
+from app.setting import CONFIG
 
 
 async def send_password_reset_email(email: str, token: str):
-    email_address = "notate.sender@gmail.com"  # ваш адрес электронной почты
-    email_password = "alwraoqkfuzwmfgk"  # пароль вашего аккаунта
+    email_address = CONFIG.EMAIL_USER
+    email_password = CONFIG.EMAIL_PASS
 
     # создание письма
     msg = EmailMessage()
