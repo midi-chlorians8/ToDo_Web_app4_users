@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     ALGORITHM: str
     SQLALCHEMY_DATABASE_URL: str
 
+    EMAIL_USER: str
+    EMAIL_PASS: str
+    
     class Config:
         env_file = "./.env"
 
