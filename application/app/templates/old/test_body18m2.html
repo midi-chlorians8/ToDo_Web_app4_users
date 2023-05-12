@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заметки</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        #logoutBtn {
+            font-size: 16px;
+            border: none;
+            background-color: #8f8f8f;
+            color: #ffffff;
+            padding: 5px 10px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #logoutBtn:hover {
+            background-color: #7d7d7d;
+        }
+
+        #fullname {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        h1 {
+            color: #4d4d4d;
+        }
+
+        /* Other styles remain the same */
+
+        #submitBtn {
+            width: 80px;
+            height: 80px;
+            margin-left: 10px;
+            font-size: 24px;
+            text-align: center;
+            line-height: 80px;
+            background-color: #64b5f6;
+            border: 1px solid #42a5f5;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        #submitBtn:hover {
+            background-color: #42a5f5;
+        }
+
+        #addNoteBtn {
+            font-size: 72px;
+            width: 100%;
+            height: 75px;
+            background-color: #64b5f6;
+            border: 1px solid #42a5f5;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        #addNoteBtn:hover {
+            background-color: #42a5f5;
+        }
+    </style>
+    <script>
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+    
+        function clearTokenCookie() {
+            setCookie("token", "", -1); // Expire the token cookie
+        }
+    
+        function logout() {
+            clearTokenCookie();
+            localStorage.removeItem("fullname");
+            // Redirect the user to the login page or update the UI to reflect the logged-out state
+            window.location.href = "http://0.0.0.0:8001/"; // Replace with the URL of your login page
+        }
+    
+    
+    
+        function getTokenFromCookie(cookieName) {
+            const cookieString = document.cookie;
+            const cookieArray = cookieString.split('; ');
+    
+            for (const cookie of cookieArray) {
+                const [key, value] = cookie.split('=');
+                if (key === cookieName) {
+                    return value;
+                }
+            }
+            return null;
+        }
+        async function deleteNote(noteId) {
+            const token = getTokenFromCookie("token");
+    
+            const response = await fetch(`http://0.0.0.0:8001/posts/${noteId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+    
+            if (response.ok) {
+                await loadMessages();
+            } else {
+                console.error("Error deleting note");
+            }
+        }
+        async function loadMessages() {
+            const token = getTokenFromCookie('token');
+            const response = await fetch(`http://0.0.0.0:8001/sec_posts_query?start=0&end=15`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                displayMessages(data.data);
+            } else {
+                console.error("Error loading messages");
+            }
+        }
+    
+        function displayMessages(messages) {
+            const notesContainer = document.getElementById("notesContainer");
+            notesContainer.innerHTML = "";
+    
+            messages.forEach(message => {
+                const noteContainer = document.createElement("div");
+                noteContainer.className = "note-container";
+    
+                const noteRectangle = document.createElement("div");
+                noteRectangle.className = "note-rectangle";
+                noteRectangle.textContent = message.content
+                noteContainer.appendChild(noteRectangle);
+    
+                const minusButton = document.createElement("button");
+                minusButton.className = "minus-button";
+                minusButton.setAttribute("data-note-id", message.id);
+                minusButton.onclick = function () {
+                    deleteNote(this.getAttribute("data-note-id"));
+                };
+                const minusSpan = document.createElement("span");
+                minusSpan.className = "centered";
+                minusSpan.textContent = "-";
+                minusButton.appendChild(minusSpan);
+                noteContainer.appendChild(minusButton);
+    
+                notesContainer.appendChild(noteContainer);
+    
+                minusButton.style.height = noteRectangle.offsetHeight + 'px';
+            });
+        }
+    
+        function createNote() {
+            const textInput = document.getElementById("textInput");
+            const submitBtn = document.getElementById("submitBtn");
+    
+            textInput.style.display = "block";
+            submitBtn.style.display = "block";
+            document.getElementById("addNoteBtn").style.display = "none";
+        }
+    
+        async function submitNote() {
+            const textInput = document.getElementById("textInput");
+            const content = textInput.value;
+            const token = getTokenFromCookie("token");
+            const ownerId = 'your_owner_id_here';
+    
+            const requestBody = {
+                id: null,
+                title: "New Note",
+                content: content,
+                owner_id: ownerId
+            };
+    
+            const response = await fetch("http://0.0.0.0:8001/posts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+    
+            if (response.ok) {
+                textInput.value = "";
+                textInput.style.display = "none";
+                document.getElementById("submitBtn").style.display = "none";
+                document.getElementById("addNoteBtn").style.display = "block";
+                await loadMessages();
+            } else {
+                console.error("Error submitting note");
+            }
+        }
+    
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            // const fullname = urlParams.get("fullname");
+            const fullname = urlParams.get("fullname") || "Аноним";
+            document.getElementById("fullname").textContent = fullname;
+            loadMessages();
+        }
+    
+        document.getElementById("textInput").addEventListener("input", function() {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+            document.getElementById("submitBtn").style.height = this.style.height;
+        });
+    </script>
+</head>
+
+<body>
+    <button id="logoutBtn" type="button" onclick="logout()">Выйти</button>
+    <div id="fullname"></div>
+    <div style="text-align: center;">
+        <h1>Мои заметки</h1>
+        <div style="width: 910px; margin-left: auto; margin-right: auto;">
+            <button id="addNoteBtn" style="font-size: 72px; width: 100%; height: 75px;" onclick="createNote()">+</button>
+        </div>
+        <div id="inputContainer">
+            <textarea id="textInput" style="display: none;"></textarea>
+            <button id="submitBtn" style="display: none;" onclick="submitNote()">send</button>
+        </div>
+    </div>
+    <div id="notesContainer" style="display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px;"></div>
+</body>
+</html>
