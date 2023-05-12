@@ -22,9 +22,10 @@ async def get_posts(
 @posts_route.post("/posts", tags=["posts"], response_model=PostSchema)
 async def add_post(data: PostSchemaCreate, current_user_id: int = Depends(get_current_user_id),
                    session: PostsRepository = Depends(get_posts_repository)) -> dict:
-    if current_user_id != data.user_id:
-        raise HTTPException(status_code=422, detail='current user id and body id mismatch')
-    response = await PostsAPIController.controller_create_user_post(data, posts=session)
+    # if current_user_id != data.user_id:
+    #     raise HTTPException(status_code=422, detail='current user id and body id mismatch')
+    # feature for checking body and user id
+    response = await PostsAPIController.controller_create_user_post(data, current_user_id, posts=session)
     return response
 
 

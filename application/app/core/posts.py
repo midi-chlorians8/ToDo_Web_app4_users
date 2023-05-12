@@ -12,12 +12,13 @@ class PostsRepository(BaseRepository):
 
     async def create_post(
             self,
-            data: PostSchemaCreate) -> PostSchema:
+            data: PostSchemaCreate,
+            current_user_id: int) -> PostSchema:
         new_post = NewPost(
             created_at=datetime.now(),
             title=data.title if data.title else None,
             content=data.content,
-            user_id=data.user_id
+            user_id=current_user_id
         )
         values = {**new_post.dict()}
         query = sql.insert(Posts).values(**values).returning(
