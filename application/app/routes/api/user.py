@@ -3,13 +3,17 @@ from app.controllers.user import UserAPIController
 from app.core.user import UserRepository
 from app.repositories.user import get_user_repository
 from app.shemas.user import UserSchemaCreate, UserSchemaOut, UserLoginSchema, PasswordResetSchema
+from app.core.posts import PostsRepository
+from app.repositories.posts import get_posts_repository
 
 users_route = APIRouter()
 
 
 @users_route.post("/register", response_model=UserSchemaOut)
-async def user_register(data: UserSchemaCreate, session: UserRepository = Depends(get_user_repository)):
-    return await UserAPIController.create_api_user(data=data, user=session)
+async def user_register(data: UserSchemaCreate,
+                        session: UserRepository = Depends(get_user_repository),
+                        post_session: PostsRepository = Depends(get_posts_repository)):
+    return await UserAPIController.create_api_user(data=data, user=session, post=post_session)
 
 
 @users_route.post("/login", response_model=UserSchemaOut)

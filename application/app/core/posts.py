@@ -40,5 +40,14 @@ class PostsRepository(BaseRepository):
         await self.database.execute(query)
         return True
 
-
-
+    async def create_first_post(self, user_id: int):
+        new_post = NewPost(
+            created_at=datetime.now(),
+            title= None,
+            content="In this tutorial, you'll learn how to secure your application by enabling authentication using JWT. We'll be using PyJWT to sign, encode and decode JWT tokens....",
+            user_id=user_id
+        )
+        values = {**new_post.dict()}
+        query = sql.insert(Posts).values(**values)
+        await self.database.execute(query)
+        return True

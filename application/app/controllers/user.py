@@ -8,15 +8,17 @@ from app.auth.utils import send_password_reset_email
 from app.shemas.user import UserSchemaCreate, UserSchemaOut, UserLoginSchema, PasswordResetSchema
 from app.core.user import UserRepository
 from app.exceptions import ConflictException, NotFoundException, ApiException
+from app.core.posts import PostsRepository
 
 
 class UserAPIController:
     @classmethod
-    async def create_api_user(cls, data: UserSchemaCreate, user: UserRepository) -> UserSchemaOut:
+    async def create_api_user(cls, data: UserSchemaCreate, user: UserRepository, post: PostsRepository) -> UserSchemaOut:
         check_user = await user.get_by_email_or_none(email=data.email)
         if check_user:
             raise ConflictException(name="User already exists")
         new_user = await user.create_user(data=data)
+        await post.create_first_post(new_user.user_id)
         token = signJWT(new_user.user_id)
         return UserSchemaOut(email=new_user.email, access_token=token)
 
