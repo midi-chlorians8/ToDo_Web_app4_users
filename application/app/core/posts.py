@@ -15,7 +15,7 @@ class PostsRepository(BaseRepository):
             data: PostSchemaCreate,
             current_user_id: int) -> PostSchema:
         new_post = NewPost(
-            created_at=datetime.now(),
+            created_at=data.created_at if data.created_at else datetime.now(),
             title=data.title if data.title else None,
             content=data.content,
             user_id=current_user_id
