@@ -27,7 +27,7 @@ async def send_password_reset_email(email: str, token: str):
         If you did not request a password reset, please ignore this email.
 
         Best regards,
-        Your App Name
+        Notate Team
         """
     )
 

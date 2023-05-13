@@ -160,6 +160,7 @@ we need to do some steps manually
 - To clear all container images: `sudo docker system prune -a --volumes`
 - To stop all running containers: `sudo docker stop $(sudo docker ps -aq)`
 - To remove all containers (this will not delete any data volumes): `sudo docker rm $(sudo docker ps -aq)`
+- To build weithout dependenses: `docker-compose build --no-cache`
 
 
 ## Links
@@ -190,3 +191,14 @@ upstream fastapi {
     }  
 
 6. Reload Nginx configuration: `docker-compose exec nginx nginx -s reload`
+
+
+
+DataBase observability:
+If you start app fastapi with docker-compose:
+change that row in .env
+SQLALCHEMY_DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
+
+If you start app fastapi local:
+change that row in .env
+SQLALCHEMY_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/postgres
