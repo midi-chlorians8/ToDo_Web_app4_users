@@ -65,10 +65,12 @@ jobs:
           script : |
 
             if [ ! -d "ToDo_Web_app4_users" ]; then 
-                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git 
+                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git || echo "git clone failed" 
             fi
 
             cd /home/ubuntu/ToDo_Web_app4_users/
+            ls -la
+
             git diff-index --quiet HEAD -- || CHANGES_PRESENT="true" || CHANGES_PRESENT="false"
 
             if [ "$CHANGES_PRESENT" = "true" ]; then 
