@@ -96,8 +96,9 @@ jobs:
             
             cd application
             echo SECRET=${{ secrets.SECRET }} >> .env
+            echo JWT_RESET_SECRET_KEY=${{ secrets.JWT_RESET_SECRET_KEY }} >> .env
             cd ..
-            
+
             docker-compose up -d db
             docker-compose up -d web
 
