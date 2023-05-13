@@ -85,7 +85,7 @@ jobs:
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }} 
             
 
-            alembic upgrade head
+            #alembic upgrade head
 
             docker-compose up -d web
             docker-compose up -d db
