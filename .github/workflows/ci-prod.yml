@@ -94,6 +94,8 @@ jobs:
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }} 
             
+            echo SECRET=${{ secrets.SECRET }} >> .env
+            
             docker-compose up -d db
             docker-compose up -d web
 
