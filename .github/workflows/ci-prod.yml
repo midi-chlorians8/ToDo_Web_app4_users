@@ -42,8 +42,12 @@ jobs:
 
       - name: Create .env file from secrets
         run: |
-          echo FASTAPIENV=${{ secrets.FASTAPIENV }} >> .env
-          # echo SECRET2=${{ secrets.SECRET2 }} >> .env
+          echo SECRET=${{ secrets.SECRET }} >> .env
+          echo JWT_RESET_SECRET_KEY=${{ secrets.JWT_RESET_SECRET_KEY }} >> .env
+          echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env
+          echo SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }} >> .env
+          echo EMAIL_USER=${{ secrets.EMAIL_USER }} >> .env
+          echo EMAIL_PASS=${{ secrets.EMAIL_PASS }} >> .env
           # Add more lines as necessary for each secret
 
       - name: Build, tag, and push image to Amazon ECR
