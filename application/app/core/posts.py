@@ -44,7 +44,7 @@ class PostsRepository(BaseRepository):
         new_post = NewPost(
             created_at=datetime.now(),
             title= None,
-            content="""Welcome to our note-taking app! Elon Musk once said, "When there's nothing to lose, there's only winning left." Plan your victories and successes with our application.""",
+            content=""" Welcome to our note-taking app! Elon Musk once said, "When there's nothing to lose, there's only winning left." Plan your victories and successes with our application. """,
             user_id=user_id
         )
         values = {**new_post.dict()}
