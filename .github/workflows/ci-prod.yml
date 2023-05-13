@@ -65,7 +65,7 @@ jobs:
           script : |
 
             if [ ! -d "ToDo_Web_app4_users" ]; then 
-                git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git || echo "git clone failed" 
+                git clone -b prod https://github.com/midi-chlorians8/ToDo_Web_app4_users.git || echo "git clone failed" 
             fi
 
             cd /home/ubuntu/ToDo_Web_app4_users/
@@ -80,7 +80,6 @@ jobs:
                 if git stash list | grep -q "stash@{0}"; then
                     git stash apply 
                 fi
-
             fi 
 
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
