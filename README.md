@@ -202,3 +202,6 @@ SQLALCHEMY_DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
 If you start app fastapi local:
 change that row in .env
 SQLALCHEMY_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/postgres
+
+Migration command:
+alembic upgrade heads

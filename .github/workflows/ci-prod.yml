@@ -96,8 +96,12 @@ jobs:
             
             cd application
             rm -f .env
-            echo SECRET='${{ secrets.SECRET }}' >> .env
-            echo JWT_RESET_SECRET_KEY='${{ secrets.JWT_RESET_SECRET_KEY }}' >> .env
+            echo SECRET=${{ secrets.SECRET }} >> .env
+            echo JWT_RESET_SECRET_KEY=${{ secrets.JWT_RESET_SECRET_KEY }} >> .env
+            echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env
+            echo SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }} >> .env
+            echo EMAIL_USER=${{ secrets.EMAIL_USER }} >> .env
+            echo EMAIL_PASS=${{ secrets.EMAIL_PASS }} >> .env           
             cd ..
 
             docker-compose up -d db
