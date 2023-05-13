@@ -40,23 +40,23 @@ jobs:
           pwd
           ls
 
-      - name: Create .env file from secrets
-        run: |
-          echo SECRET=${{ secrets.SECRET }} >> .env
-          echo JWT_RESET_SECRET_KEY=${{ secrets.JWT_RESET_SECRET_KEY }} >> .env
-          echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env
-          echo SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }} >> .env
-          echo EMAIL_USER=${{ secrets.EMAIL_USER }} >> .env
-          echo EMAIL_PASS=${{ secrets.EMAIL_PASS }} >> .env
-          # Add more lines as necessary for each secret
+      # - name: Create .env file from secrets
+      #   run: |
+      #     echo SECRET=${{ secrets.SECRET }} >> .env
+      #     echo JWT_RESET_SECRET_KEY=${{ secrets.JWT_RESET_SECRET_KEY }} >> .env
+      #     echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env
+      #     echo SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }} >> .env
+      #     echo EMAIL_USER=${{ secrets.EMAIL_USER }} >> .env
+      #     echo EMAIL_PASS=${{ secrets.EMAIL_PASS }} >> .env
+      #     # Add more lines as necessary for each secret
 
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          # IMAGE_TAG: ${{ github.sha }}
+          # IMAGE_TAG: ${{ github.sha }} --build-arg env_file=.env
         run: |
-          docker build --build-arg env_file=.env -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./application
+          docker build  -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./application
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
           # docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest

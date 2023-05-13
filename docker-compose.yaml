@@ -16,7 +16,8 @@ services:
     # depends_on:
     #   - db
     restart: always
-
+    environment: 
+      - ENV_FILE=/application/.env
   db:
     container_name: "db"
     image: postgres:15.2-alpine
