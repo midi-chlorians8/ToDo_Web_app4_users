@@ -2,7 +2,7 @@ name: Deploy to ec2 instance prod
 
 on:
   push:
-    branches: [ main ]
+    branches: [ prod ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -63,7 +63,6 @@ jobs:
           script_stop: true # stop script if any error occurs 
           # script_timeout : 60 # timeout after 60 seconds 
           script : |
-            # cd /home/ubuntu/
 
             if [ ! -d "ToDo_Web_app4_users" ]; then 
                 git clone https://github.com/midi-chlorians8/ToDo_Web_app4_users.git 
@@ -74,16 +73,19 @@ jobs:
 
             if [ "$CHANGES_PRESENT" = "true" ]; then 
                 git stash 
+                git checkout prod
                 git pull 
                 if git stash list | grep -q "stash@{0}"; then
                     git stash apply 
                 fi
-            # else 
-            #     git pull 
+
             fi 
 
-            # perl -i -pe 'if (/^ web:/../^[^ ]/) { s/(image:.*):.*/$1:6cdf9ed/ if /^ image:/ }' docker-compose.yaml 
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }} 
+            
+
+            alembic upgrade head
+
             docker-compose up -d web
             docker-compose up -d db
