@@ -74,6 +74,7 @@ jobs:
 
             if [ "$CHANGES_PRESENT" = "true" ]; then 
                 git stash 
+                git checkout prod
                 git pull 
                 if git stash list | grep -q "stash@{0}"; then
                     git stash apply 
@@ -85,5 +86,8 @@ jobs:
             # perl -i -pe 'if (/^ web:/../^[^ ]/) { s/(image:.*):.*/$1:6cdf9ed/ if /^ image:/ }' docker-compose.yaml 
             perl -i -pe 'if (/^  web:/../^[^ ]/) { s/(image:.*):.*/$1:${{ env.IMAGE_TAG }}/ if /^    image:/ }' docker-compose.yaml
             aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }} 
+            
+
+            
             docker-compose up -d web
             docker-compose up -d db
