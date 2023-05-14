@@ -4,9 +4,8 @@ services:
 
 
   web:
-    build: ./application
-    # image: 734075410113.dkr.ecr.eu-central-1.amazonaws.com/fastapi-backend-repository-gorilla-prod:cc96d83
-    # command: bash -c 'sleep 5;  uvicorn app.api:app --host 0.0.0.0' #bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
+    # build: ./application
+    image: 734075410113.dkr.ecr.eu-central-1.amazonaws.com/fastapi-backend-repository-gorilla-prod:cc96d83
     command: bash -c 'sleep 5; alembic upgrade head; python main.py --host 0.0.0.0' #bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0'
 
     volumes:
