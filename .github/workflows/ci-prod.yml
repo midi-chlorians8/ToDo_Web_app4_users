@@ -110,5 +110,5 @@ jobs:
       # Добавьте этот шаг для проверки работоспособности приложения после развертывания
       - name: Run smoke tests
         run: |
-          sleep 5
+          sleep 8
           curl -f -X GET "https://todo.kolotech.space/healthcheck" -H "accept: application/json"
