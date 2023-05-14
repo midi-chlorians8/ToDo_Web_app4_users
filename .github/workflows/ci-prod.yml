@@ -74,8 +74,7 @@ jobs:
           script : |
 
             if [ ! -d "ToDo_Web_app4_users" ]; then 
-                su ubuntu
-                git clone -b prod https://github.com/midi-chlorians8/ToDo_Web_app4_users.git || echo "git clone failed" 
+                sudo -u ubuntu git clone -b prod https://github.com/midi-chlorians8/ToDo_Web_app4_users.git || echo "git clone failed" 
             fi
 
             cd /home/ubuntu/ToDo_Web_app4_users/
