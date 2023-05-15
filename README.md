@@ -177,7 +177,8 @@ we need to do some steps manually
 1. Uncomment nginx and certbot in docker-compose.
 2. Switch to root user: `sudo su`
 3. Edit files `init-letsencrypt.sh` and `data/nginx/app.conf`, replacing the server's DNS name with the actual DNS name.
-4. Run the script to set up Let's Encrypt certificates: `./init-letsencrypt.sh`
+4. To receive certs we need comment upstream and proxypass with fastapi
+5. Run the script to set up Let's Encrypt certificates: `./init-letsencrypt.sh`
 5. Uncomment the following lines in the Nginx configuration:
 
 uncomment:
